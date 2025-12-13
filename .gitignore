@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Claude Code context (personal workspace files)
+claude.md
+.claude/
