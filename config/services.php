@@ -35,4 +35,27 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Hub Personal Integration
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for Hub Personal event tracking system.
+    | This allows Portfolio to report events to the centralized Hub.
+    |
+    */
+
+    'hub' => [
+        'url' => env('HUB_API_URL'),
+        'token' => env('HUB_API_TOKEN'),
+        'enabled' => env('HUB_EVENTS_ENABLED', false),
+        'source' => env('HUB_SOURCE', 'portfolio'),
+        'env' => env('HUB_ENV', 'production'),
+
+        // Analytics settings
+        'track_pageviews' => env('HUB_TRACK_PAGEVIEWS', true),
+        'track_interactions' => env('HUB_TRACK_INTERACTIONS', true),
+        'report_errors' => env('HUB_REPORT_ERRORS', true),
+    ],
+
 ];
