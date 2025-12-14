@@ -26,3 +26,41 @@ Thumbs.db
 # Claude Code context (personal workspace files)
 claude.md
 .claude/
+
+
+# ============================================
+# Claude Code Hooks System
+# Add these lines to the project's .gitignore
+# ============================================
+
+# Claude hooks and automations (PRIVATE - local only)
+.claude/
+!.claude/.gitkeep
+
+# Historial y logs de sesiones (PRIVATE)
+.claude/history/
+.claude/locks/
+.claude/kb-sync/
+
+# Configuraciones de hooks (PRIVATE)
+.claude/settings.json
+.claude/settings.local.json
+
+# Scripts de hooks (PRIVATE)
+.claude/hooks/
+
+# Registry file (session tracking)
+.claude/registry.json
+
+# Contexto personal (PRIVATE)
+claude.md
+
+# Documentación de sesiones (PRIVATE - no commitear)
+SESSION_*.md
+CURRENT_STATUS.md
+INTEGRATION_STATUS.md
+*_SUMMARY_*.md
+
+# Permitir solo el README del proyecto
+# (El README es público y va al repo)
+
