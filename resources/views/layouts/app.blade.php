@@ -32,9 +32,9 @@
         @yield('content')
     </main>
 
-    <footer class="py-10 border-t border-slate-800 text-center text-slate-500 text-sm">
-        <p>&copy; {{ date('Y') }} — Diseñado con Laravel & Docker bajo estándares de Ciberseguridad[cite: 13, 61].</p>
-    </footer>
+<footer class="py-8 text-center text-slate-500 text-xs">
+    © 2026 — Diseñado con Laravel & Docker bajo estándares de Ciberseguridad.
+</footer>
 
 </body>
 </html>
