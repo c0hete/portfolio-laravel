@@ -15,8 +15,8 @@
     </h1>
     
     <p class="max-w-2xl text-lg text-slate-400 mb-10 leading-relaxed">
-        Especialista en Backend PHP/Laravel [cite: 5, 10] y Arquitectura de Infraestructura. 
-        Actualmente operando plataformas de alta disponibilidad y finalizando Ingeniería en Ciberseguridad[cite: 7, 36, 61].
+        Desarrollador Backend especializado en PHP/Laravel [cite: 5, 92, 259] y Arquitectura de Infraestructura[cite: 84, 105]. 
+        Actualmente operando plataformas de alta disponibilidad [cite: 87, 126] y finalizando Ingeniería en Ciberseguridad[cite: 61, 240].
     </p>
 
     <div class="flex flex-wrap justify-center gap-4">
@@ -24,7 +24,7 @@
             <span class="text-emerald-400">status:</span> deploying_assets
         </div>
         <div class="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 text-sm font-mono">
-            <span class="text-blue-400">location:</span> Santiago, CL 
+            <span class="text-blue-400">location:</span> Temuco, CL
         </div>
     </div>
 </section>
