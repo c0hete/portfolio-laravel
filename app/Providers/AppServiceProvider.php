@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Services\HubEventReporter;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Forzar HTTPS en producción para evitar errores de contenido mixto (CSP)
+        if (app()->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Report app registration on startup (only in production)
         if (app()->environment('production')) {
             $hub = app(HubEventReporter::class);
