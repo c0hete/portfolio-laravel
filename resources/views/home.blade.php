@@ -11,7 +11,7 @@
     </div>
     
     <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
-        Construyendo el <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Búnker Digital</span>
+        Construyendo el <span class="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-emerald-400">Búnker Digital</span>
     </h1>
     
     <p class="max-w-2xl text-lg text-slate-400 mb-10 leading-relaxed">
