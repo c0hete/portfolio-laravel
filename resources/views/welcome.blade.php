@@ -1,55 +1,31 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio — En Desarrollo</title>
+@extends('layouts.app')
 
-    <!-- SEO básico -->
-    <meta name="description" content="Portafolio profesional de José Alvarado. Sitio actualmente en desarrollo.">
-    <link rel="canonical" href="https://alvaradomazzei.cl">
+@section('content')
+<section class="min-h-[80vh] flex flex-col items-center justify-center text-center px-4">
+    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs mb-6">
+        <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+        </span>
+        <span>Sistema en desarrollo — VMI Online</span>
+    </div>
+    
+    <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white mb-6">
+        Construyendo el <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">Búnker Digital</span>
+    </h1>
+    
+    <p class="max-w-2xl text-lg text-slate-400 mb-10 leading-relaxed">
+        Especialista en Backend PHP/Laravel [cite: 5, 10] y Arquitectura de Infraestructura. 
+        Actualmente operando plataformas de alta disponibilidad y finalizando Ingeniería en Ciberseguridad[cite: 7, 36, 61].
+    </p>
 
-    <!-- Content Security Policy (válido para <meta>) -->
-    <meta http-equiv="Content-Security-Policy"
-          content="
-            default-src 'self';
-            img-src 'self' data:;
-            style-src 'self' 'unsafe-inline';
-            font-src 'self' data:;
-            script-src 'self';
-            connect-src 'self';
-            base-uri 'self';
-            form-action 'self';
-          ">
-
-    <!-- Privacidad -->
-    <meta name="referrer" content="no-referrer">
-    <meta name="robots" content="noindex, nofollow">
-
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.ico">
-
-    <!-- Vite (ÚNICA forma correcta) -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-
-<body class="bg-gray-900 text-gray-200 flex items-center justify-center min-h-screen">
-
-    <main class="text-center space-y-6 px-4">
-        <h1 class="text-4xl font-bold">🚧 Sitio en desarrollo</h1>
-
-        <p class="text-lg text-gray-400 leading-relaxed">
-            Estoy construyendo mi nuevo portafolio profesional.<br>
-            Muy pronto estará disponible.
-        </p>
-
-        <div class="mt-6">
-            <a href="mailto:jose@alvaradomazzei.cl"
-               class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition">
-                Contactarme
-            </a>
+    <div class="flex flex-wrap justify-center gap-4">
+        <div class="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 text-sm font-mono">
+            <span class="text-emerald-400">status:</span> deploying_assets
         </div>
-    </main>
-
-</body>
-</html>
+        <div class="px-4 py-2 rounded-lg bg-slate-900 border border-slate-800 text-sm font-mono">
+            <span class="text-blue-400">location:</span> Santiago, CL 
+        </div>
+    </div>
+</section>
+@endsection
