@@ -12,11 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // 🛡️ CONFÍA EN EL PROXY (Nginx)
+        // Esto hace que Laravel reconozca el HTTPS, el Host y la IP real del usuario
+        $middleware->trustProxies(at: '*'); 
+
         // ✅ Mantenemos la seguridad
         $middleware->append(SecureHeadersMiddleware::class);
-
-        // 🪓 Eliminamos el tracking del Hub para evitar errores de inyección
-        // $middleware->append(App\Http\Middleware\TrackPageViews::class); 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

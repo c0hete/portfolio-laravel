@@ -33,7 +33,7 @@ class SecureHeadersMiddleware
              . "script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
              . "connect-src 'self'; "
              . "base-uri 'self'; "
-             . "form-action 'self' https://alvaradomazzei.cl; " // 🔥 Solución al error de bloqueo POST
+             . "form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
              . "upgrade-insecure-requests; " // 🔥 Convierte cualquier intento HTTP en HTTPS
              . "frame-ancestors 'none';";
 
