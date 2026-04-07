@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\HubEventReporter;
 use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
