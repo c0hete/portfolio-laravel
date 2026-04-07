@@ -1,20 +1,35 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Project; // Importante para que Laravel sepa dónde buscar los proyectos
+use App\Models\Project;
+use App\Http\Controllers\ContactController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes - Protocol Portfolio Node
+|--------------------------------------------------------------------------
+*/
+
+// Home: Core Identity
 Route::get('/', function () { 
-    return view('home'); 
-});
+    return view('sections.home'); 
+})->name('home');
 
+// Stack: Infrastructure & Ecosystem
 Route::get('/stack', function () { 
-    return view('stack'); 
-});
+    return view('sections.stack'); 
+})->name('stack');
 
+// Proyectos: Mission Critical Systems
 Route::get('/proyectos', function () { 
-    // Extraemos todos los sistemas de misión crítica de la DB
     $projects = Project::all(); 
+    return view('sections.projects', compact('projects')); 
+})->name('projects.index');
 
-    // Pasamos la variable a la vista para que el @forelse funcione
-    return view('projects', compact('projects')); 
-});
+// Contacto: Secure Communication Protocol
+Route::get('/contacto', function () {
+    return view('sections.contact');
+})->name('contact.index');
+
+// Acción de Envío (POST)
+Route::post('/contacto', [ContactController::class, 'submit'])->name('contact.submit');

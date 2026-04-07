@@ -1,78 +1,73 @@
 @props(['project'])
 
-@php
-    $isEmerald = str_contains(strtolower($project->category), 'biometría');
-    $accentColor = $isEmerald ? 'emerald' : 'blue';
-@endphp
-
-<article class="group relative bg-slate-900/40 border border-slate-800 p-8 rounded-2xl hover:border-{{ $accentColor }}-500/30 transition-all duration-500 shadow-2xl flex flex-col h-full overflow-hidden">
+<article class="group relative flex flex-col h-full bg-[#030712]/50 border border-white/5 p-8 transition-all duration-300 hover:border-cyan-500/30 hover:bg-[#030712]/80">
     
-    {{-- Resplandor de fondo --}}
-    <div class="absolute -right-16 -top-16 w-48 h-48 bg-{{ $accentColor }}-500/10 blur-[100px] group-hover:bg-{{ $accentColor }}-500/20 transition-all duration-700 pointer-events-none"></div>
+    {{-- Efecto de Iluminación Sutil (Fondo) --}}
+    <div class="absolute -right-px -top-px w-32 h-32 bg-cyan-500/5 blur-3xl group-hover:bg-cyan-500/10 transition-all duration-500 pointer-events-none"></div>
 
-    {{-- CABECERA: Logo con Redirección Integrada --}}
-    <div class="relative z-20 flex justify-between items-start mb-6">
+    {{-- CABECERA: Identificación de Sistema --}}
+    <div class="relative z-10 flex justify-between items-start mb-8">
         
-        {{-- CONTENEDOR DE LOGO + LINK --}}
-        @if($project->url)
-            <a href="{{ $project->url }}" target="_blank" class="relative group/logo block">
-                <div class="w-32 h-20 flex items-center justify-start transition-all duration-500 group-hover/logo:scale-105">
-                    @if($project->logo)
-                        <img src="{{ asset($project->logo) }}" 
-                             alt="{{ $project->title }} Logo" 
-                             class="max-w-full max-h-full object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                    @else
-                         {{-- Icono genérico si no hay logo --}}
-                         <div class="w-16 h-16 flex items-center justify-center bg-{{ $accentColor }}-500/10 rounded-2xl border border-{{ $accentColor }}-500/20 text-{{ $accentColor }}-400">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                         </div>
-                    @endif
-
-                    {{-- Mini Badge de Redirección sobre el logo --}}
-                    <div class="absolute -right-2 -bottom-1 p-1.5 bg-slate-950 border border-slate-800 rounded-lg text-slate-500 group-hover/logo:text-{{ $accentColor }}-400 group-hover/logo:border-{{ $accentColor }}-500/50 transition-all shadow-xl opacity-0 group-hover/logo:opacity-100 transform translate-y-2 group-hover/logo:translate-y-0">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    </div>
+        {{-- LOGO AREA --}}
+        <div class="w-24 h-12 flex items-center justify-start overflow-hidden">
+            @if($project->logo)
+                <img src="{{ asset($project->logo) }}" 
+                     alt="{{ $project->title }} Logo" 
+                     class="max-w-full max-h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity grayscale group-hover:grayscale-0">
+            @else
+                <div class="font-mono text-xs text-slate-700 tracking-tighter uppercase italic">
+                    [no_asset_found]
                 </div>
-            </a>
-        @else
-            {{-- Logo estático si no hay URL --}}
-            <div class="w-32 h-20 flex items-center justify-start opacity-50">
-                <img src="{{ asset($project->logo) }}" class="max-w-full max-h-full object-contain grayscale">
-            </div>
-        @endif
+            @endif
+        </div>
 
-        {{-- Tag de Categoría --}}
-        <div class="flex flex-col items-end">
-            <span class="text-[9px] font-mono py-1 px-3 bg-slate-950 text-{{ $accentColor }}-400 rounded-full border border-{{ $accentColor }}-500/20 uppercase tracking-widest shadow-lg">
+        {{-- STATUS & CATEGORY --}}
+        <div class="flex flex-col items-end gap-2">
+            <span class="font-mono text-[9px] px-2 py-0.5 bg-cyan-500/5 text-cyan-500/80 border border-cyan-500/20 uppercase tracking-[0.2em]">
                 {{ $project->category }}
             </span>
+            <div class="flex items-center gap-1.5">
+                <span class="relative flex h-1.5 w-1.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-500"></span>
+                </span>
+                <span class="font-mono text-[8px] text-slate-600 uppercase tracking-widest">stable_release</span>
+            </div>
         </div>
     </div>
     
-    {{-- CUERPO: Título y Rol --}}
+    {{-- CUERPO: Título y Metadata --}}
     <div class="relative z-10 mb-4">
-        <h2 class="text-2xl font-black text-white group-hover:text-{{ $accentColor }}-400 transition-colors uppercase tracking-tight leading-tight">
+        <h2 class="text-xl font-bold text-slate-100 tracking-tight group-hover:text-white transition-colors">
             {{ $project->title }}
         </h2>
-        <div class="flex items-center gap-2 mt-1">
-            <span class="w-6 h-[1px] bg-{{ $accentColor }}-500/50"></span>
-            <p class="text-slate-400 text-[10px] font-mono font-bold uppercase tracking-[0.2em]">
-                {{ $project->role }}
-            </p>
-        </div>
+        <p class="mt-1 font-mono text-[10px] text-slate-500 uppercase tracking-widest flex items-center gap-2">
+            <span class="text-cyan-500/40">ROLE::</span>{{ $project->role }}
+        </p>
     </div>
 
-    {{-- DESCRIPCIÓN --}}
-    <p class="relative z-10 text-slate-400 text-sm mb-8 leading-relaxed font-light">
+    {{-- DESCRIPCIÓN: Tipografía más ligera y técnica --}}
+    <p class="relative z-10 text-slate-400 text-[13px] leading-relaxed mb-10 font-light max-w-prose">
         {{ $project->description }}
     </p>
     
-    {{-- FOOTER: Tecnologías --}}
-    <div class="relative z-10 flex flex-wrap gap-2 mt-auto">
+    {{-- FOOTER: Stack Tecnológico estilo "Dependencies" --}}
+    <div class="relative z-10 flex flex-wrap gap-x-5 gap-y-2 mt-auto pt-6 border-t border-white/5">
         @foreach($project->stack as $tech)
-            <span class="text-[8px] font-bold px-2 py-1 bg-slate-950 border border-slate-800 rounded text-slate-500 uppercase tracking-tighter">
-                {{ $tech }}
-            </span>
+            <div class="flex items-center gap-2">
+                <span class="font-mono text-[10px] text-slate-500 hover:text-cyan-400/70 transition-colors cursor-default">
+                    <span class="text-cyan-500/30">#</span>{{ strtolower($tech) }}
+                </span>
+            </div>
         @endforeach
     </div>
+
+    {{-- LINK ACCIÓN (Si existe) --}}
+    @if($project->url)
+        <a href="{{ $project->url }}" target="_blank" class="absolute bottom-6 right-8 text-slate-700 hover:text-cyan-400 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+            </svg>
+        </a>
+    @endif
 </article>

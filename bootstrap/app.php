@@ -4,7 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use App\Http\Middleware\SecureHeadersMiddleware;
-use App\Http\Middleware\TrackPageViews;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,11 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Middleware de seguridad global
+        // ✅ Mantenemos la seguridad
         $middleware->append(SecureHeadersMiddleware::class);
 
-        // Hub tracking middleware
-        $middleware->append(TrackPageViews::class);
+        // 🪓 Eliminamos el tracking del Hub para evitar errores de inyección
+        // $middleware->append(App\Http\Middleware\TrackPageViews::class); 
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
