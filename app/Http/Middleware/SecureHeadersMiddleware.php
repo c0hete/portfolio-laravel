@@ -11,33 +11,34 @@ class SecureHeadersMiddleware
     {
         $response = $next($request);
 
-        // Seguridad general
+        // Seguridad de Cabeceras General
         $response->headers->set('X-Frame-Options', 'DENY');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('Referrer-Policy', 'no-referrer');
-        $response->headers->set('X-XSS-Protection', '0'); // Moderno, evita comportamiento obsoleto
+        $response->headers->set('X-XSS-Protection', '0');
 
-        // HSTS (solo HTTPS)
-        if ($request->isSecure()) {
+        // HSTS (Seguridad de Transporte Estricta)
+        if ($request->isSecure() || $request->header('X-Forwarded-Proto') === 'https') {
             $response->headers->set(
                 'Strict-Transport-Security',
                 'max-age=63072000; includeSubDomains; preload'
             );
         }
 
-// Content Security Policy (definitiva, por header HTTP)
-	$csp = "default-src 'self'; "
-	 . "img-src 'self' data:; "
-     	 . "style-src 'self' 'unsafe-inline'; "
-     	 . "font-src 'self' data:; "
-    	 . "script-src 'self'; "
-    	 . "connect-src 'self'; "
-    	 . "base-uri 'self'; "
-    	 . "form-action 'self'; "
-    	 . "frame-ancestors 'none';";
+        // Content Security Policy (Optimizado para Producción + Terminal JS)
+        $csp = "default-src 'self'; "
+             . "img-src 'self' data:; "
+             . "style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
+             . "font-src 'self' data:; "
+             . "script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
+             . "connect-src 'self'; "
+             . "base-uri 'self'; "
+             . "form-action 'self' https://alvaradomazzei.cl; " // 🔥 Solución al error de bloqueo POST
+             . "upgrade-insecure-requests; " // 🔥 Convierte cualquier intento HTTP en HTTPS
+             . "frame-ancestors 'none';";
 
-	$response->headers->set('Content-Security-Policy', $csp);
+        $response->headers->set('Content-Security-Policy', $csp);
 
-        	return $response;
-    	}
+        return $response;
+    }
 }
