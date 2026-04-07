@@ -82,40 +82,4 @@
         </div>
     </form>
 </section>
-
-<script>
-    document.getElementById('contact-form').addEventListener('submit', function(e) {
-        const btn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const loader = document.getElementById('terminal-loader');
-        const logEntries = document.getElementById('log-entries');
-        const meta = document.getElementById('system-meta');
-
-        // Bloquear el botón
-        btn.disabled = true;
-        btn.classList.add('opacity-50', 'cursor-not-allowed');
-        btnText.innerText = "PROCESANDO...";
-
-        // Mostrar terminal
-        loader.classList.remove('hidden');
-        if(meta) meta.classList.add('hidden');
-
-        // Secuencia de logs
-        const steps = [
-            ">> VALIDANDO_REGISTROS_MX...",
-            ">> CIFRANDO_PAYLOAD_OPENSSL...",
-            ">> ESTABLECIENDO_HANDSHAKE_SMTP...",
-            ">> TRANSMITIENDO_PAQUETES..."
-        ];
-
-        steps.forEach((step, index) => {
-            setTimeout(() => {
-                const line = document.createElement('span');
-                line.className = "block opacity-80 animate-in fade-in slide-in-from-left-2 duration-300";
-                line.innerText = step;
-                logEntries.appendChild(line);
-            }, (index + 1) * 600);
-        });
-    });
-</script>
 @endsection
