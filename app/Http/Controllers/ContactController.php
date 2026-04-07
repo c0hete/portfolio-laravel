@@ -8,13 +8,9 @@ use Illuminate\Support\Facades\Log;
 
 class ContactController extends Controller
 {
-    /**
-     * Handle contact form submission
-     * Validación DNS + Doble Envío SMTP (Admin & User)
-     */
     public function submit(Request $request)
     {
-        // 🛡️ CAPA 1: VALIDACIÓN DE PROTOCOLO (RFC + Existencia de DNS)
+        // 🛡️ CAPA 1: VALIDACIÓN
         $validated = $request->validate([
             'email'   => 'required|email:rfc,dns', 
             'name'    => 'required|string|max:255',
@@ -25,14 +21,16 @@ class ContactController extends Controller
         ]);
 
         $subject = $validated['subject'] ?? 'PROTOCOLO_CONTACTO: Consulta desde alvaradomazzei.cl';
-        $systemFrom = config('mail.from.address');
+        
+        // 🚨 CORRECCIÓN CRÍTICA: Forzamos la identidad que el SMTP acepta
+        $systemFrom = 'web@alvaradomazzei.cl'; 
 
         try {
-            // 📨 CAPA 2: TRANSMISIÓN AL ADMINISTRADOR (TÚ)
+            // 📨 CAPA 2: TRANSMISIÓN AL ADMINISTRADOR
             Mail::send([], [], function ($message) use ($validated, $subject, $systemFrom) {
                 $message->to('jose@alvaradomazzei.cl') 
                         ->from($systemFrom, 'Búnker Portfolio')
-                        ->replyTo($validated['email'], $validated['name'])
+                        ->replyTo($validated['email'], $validated['name']) // Permite responder al cliente
                         ->subject($subject)
                         ->html("
                             <div style='font-family: monospace; color: #333; padding: 20px; background: #f4f4f4;'>
@@ -46,7 +44,7 @@ class ContactController extends Controller
                         ");
             });
 
-            // 📩 CAPA 3: ACUSE DE RECIBO AL REMITENTE (EL USUARIO)
+            // 📩 CAPA 3: ACUSE DE RECIBO AL USUARIO
             Mail::send([], [], function ($message) use ($validated, $systemFrom) {
                 $message->to($validated['email']) 
                         ->from($systemFrom, 'José Alvarado — Systems Engineer')
@@ -56,7 +54,6 @@ class ContactController extends Controller
                                 <h2 style='color: #22d3ee; margin-bottom: 20px;'>SISTEMA_NOTIFICACIÓN</h2>
                                 <p>Hola, <strong>{$validated['name']}</strong>.</p>
                                 <p>Tu mensaje ha sido enrutado correctamente a través del nodo central de <strong>alvaradomazzei.cl</strong>.</p>
-                                
                                 <div style='border: 1px solid #0891b2; padding: 20px; margin: 30px 0; background: rgba(8, 145, 178, 0.05);'>
                                     <p style='font-size: 12px; color: #22d3ee; margin: 0;'>
                                         STATUS: Mensaje en cola de revisión.<br>
@@ -64,7 +61,6 @@ class ContactController extends Controller
                                         ETA: Respuesta en breve.
                                     </p>
                                 </div>
-                                
                                 <p>Este es un acuse de recibo automático. Por favor, no respondas directamente a este correo.</p>
                                 <hr style='border: 0; border-top: 1px solid #1e293b; margin-top: 40px;'>
                                 <p style='font-size: 10px; color: #475569;'>© 2026 — Protocol Implementation / Built with Laravel</p>
@@ -73,14 +69,14 @@ class ContactController extends Controller
             });
 
             Log::info("Intercambio de mensajes completado: {$validated['email']}");
-
             return back()->with('success', 'TRANSMISIÓN_EXITOSA: El mensaje y el acuse de recibo han sido procesados.');
 
         } catch (\Exception $e) {
+            // Guardamos el error real en el log para que lo veas por SSH
             Log::error("Fallo crítico en el nodo de correo: " . $e->getMessage());
             
             return back()->withErrors([
-                'email' => 'SISTEMA_ERROR: Fallo de conexión con el servidor SMTP (Mailcow). Verifique los registros del sistema.'
+                'email' => 'SISTEMA_ERROR: Fallo de conexión con el servidor SMTP (Mailcow).'
             ])->withInput();
         }
     }
