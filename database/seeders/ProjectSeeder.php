@@ -52,8 +52,8 @@ public function run(): void
         'role'        => 'LMS Architect & SysAdmin',
         'description' => 'Implementación y despliegue de plataforma de aprendizaje basada en Moodle. Configuración de entorno LAMP optimizado para alta concurrencia, gestión de backups automatizados y personalización de rutas de aprendizaje para programas de capacitación técnica y habilidades digitales.',
         'stack'       => ['Moodle (LMS)', 'PHP 8.2', 'MySQL', 'Ubuntu Server', 'Apache / Nginx'],
-        'url'         => 'https://aula.energiza.cl', // Confirma si este es el subdominio
-        'logo'        => 'assets/img/moodle_logo.png', // O el logo de Energiza si prefieres
+        'url'         => 'https://aula.energizavirtual.cl', 
+        'logo'        => 'assets/img/moodle_logo.png', 
     ]);
 
     // Proyecto 5: MEET ENERGIZA (BBB con Mediasoup)
