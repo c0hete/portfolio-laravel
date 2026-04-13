@@ -54,7 +54,7 @@
             <div class="space-y-2 max-w-2xl">
                 <p class="font-mono text-[10px] text-slate-500 leading-relaxed uppercase tracking-tighter">
                     <span class="text-cyan-500/60 font-bold">// CAPABILITIES_REPORT:</span> 
-                    Despliegue de nodos críticos, administración de VPNs corporativas (Wireguard) y fortificación de servicios bajo estándares de seguridad ofensiva.
+                    Despliegue de nodos críticos, administración de VPNs corporativas (Wireguard), arquitecturas DNS y servidores de correo (Mailcow) bajo estándares de seguridad ofensiva.
                 </p>
                 <p class="font-mono text-[10px] text-slate-500 uppercase tracking-tighter">
                     <span class="text-cyan-500/60 font-bold">// WORKSTATION_OS:</span> Ubuntu Server, Kali Linux, PS_CLI.

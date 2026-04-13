@@ -19,14 +19,14 @@
     {{-- Título --}}
     <h1 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-10 max-w-5xl leading-[1.05]">
         Full Stack Developer <br/> 
-        <span class="text-slate-500">& Infrastructure Lead.</span>
+        <span class="text-slate-500">& Infrastructure Engineer.</span>
     </h1>
     
     {{-- Descripción --}}
-    <p class="max-w-3xl text-lg md:text-xl text-slate-400 mb-20 leading-relaxed font-light">
-        Especialista en el ecosistema <span class="text-slate-200 font-normal">PHP/Laravel</span> con más de 3 años optimizando arquitecturas empresariales. 
-        Combino el desarrollo de software de alto impacto con la administración de infraestructuras críticas, despliegues escalables y auditorías de ciberseguridad.
-    </p>
+<p class="max-w-3xl text-lg md:text-xl text-slate-400 mb-20 leading-relaxed font-light">
+    Especialista en el ecosistema <span class="text-slate-200 font-normal">PHP/Laravel</span> orientado a la construcción de sistemas de alta disponibilidad. 
+    Combino la ingeniería de software de precisión con la fortificación de infraestructuras críticas, garantizando despliegues resilientes y operaciones continuas.
+</p>
 
     {{-- Metadata & Call to Action --}}
     <div class="flex flex-col md:flex-row items-start md:items-center gap-y-10 gap-x-12 border-t border-white/5 pt-16 w-full">
