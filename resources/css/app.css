@@ -9,7 +9,7 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
-    /* Definimos la animación y los keyframes directamente en el tema */
+    /* Definición de la animación y keyframes */
     --animate-neon-pulse: neon-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
     @keyframes neon-pulse {
@@ -22,8 +22,4 @@
             filter: brightness(1.3) drop-shadow(0 0 8px rgba(6, 182, 212, 0.6));
         }
     }
-}
-/* Añadimos esta regla fuera del @theme para controlar la pausa */
-.animate-neon-pulse:hover {
-    animation-play-state: paused;
 }
