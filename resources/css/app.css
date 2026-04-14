@@ -23,3 +23,7 @@
         }
     }
 }
+/* Fuerza la detención de cualquier animación al hacer hover en el grupo */
+.group:hover .animate-neon-pulse {
+    animation: none !important;
+}

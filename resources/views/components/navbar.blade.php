@@ -3,14 +3,14 @@
         
 {{-- Identidad de Marca: Logo + Textos --}}
 <a href="/" class="font-mono tracking-tight group flex items-center gap-3 w-auto">
-    {{-- Carga del Logo con lógica de neón reactiva --}}
-    <img src="{{ asset('assets/img/am-correo.png') }}" 
-         alt="AM Logo" 
-         class="h-10 w-auto 
-                animate-neon-pulse transition-all duration-300
-                {{-- Al hacer hover, quitamos la animación y forzamos el encendido --}}
-                group-hover:animation-none group-hover:opacity-100 
-                group-hover:brightness-125 group-hover:drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">
+{{-- Carga del Logo con lógica de neón reactiva --}}
+<img src="{{ asset('assets/img/am-correo.png') }}" 
+     alt="AM Logo" 
+     class="h-10 w-auto 
+            animate-neon-pulse transition-all duration-300
+            group-hover:opacity-100 
+            group-hover:brightness-125 
+            group-hover:drop-shadow-[0_0_10px_rgba(6,182,212,0.6)]">
          
     {{-- Bloque de texto (SysOps, etc.) --}}
     <div class="hidden sm:flex items-center gap-2">
