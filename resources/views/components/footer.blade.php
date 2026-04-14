@@ -22,27 +22,31 @@
             </p>
         </div>
         
-        {{-- Metadata del Sistema --}}
-        {{-- Aumentamos a text-xs (12px) y mejoramos los espacios (gap) --}}
-        <div class="grid grid-cols-2 gap-x-16 gap-y-6 font-mono text-xs text-slate-500 uppercase tracking-tighter">
+{{-- Metadata del Sistema: Capa de Infraestructura --}}
+        <div class="grid grid-cols-2 gap-x-12 gap-y-6 font-mono text-[11px] md:text-xs text-slate-500 uppercase tracking-tighter">
             <div class="flex flex-col text-left">
-                <span class="text-slate-600 mb-1">Environment</span>
-                <span class="text-slate-300">Production v2.1</span>
+                <span class="text-slate-600 mb-1">Server_Host</span>
+                <span class="text-slate-300">Ubuntu 24.04 LTS (VPS)</span>
             </div>
             <div class="flex flex-col text-left">
-                <span class="text-slate-600 mb-1">Region</span>
-                <span class="text-slate-300">AM-Temuco / CL</span>
+                <span class="text-slate-600 mb-1">Traffic_Control</span>
+                <span class="text-slate-300">Nginx Proxy Manager</span>
             </div>
             <div class="flex flex-col text-left">
-                <span class="text-slate-600 mb-1">Stack</span>
-                <span class="text-slate-300">Modern PHP 8.x / Docker</span>
+                <span class="text-slate-600 mb-1">Security_Layer</span>
+                <span class="text-slate-300">SSL / Hardening OS</span>
             </div>
             <div class="flex flex-col text-left">
                 <span class="text-slate-600 mb-1">Status</span>
-                <span class="text-cyan-500/80 font-bold shadow-cyan-500/20 drop-shadow-md">System Online</span>
+                <div class="flex items-center gap-2">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    </span>
+                    <span class="text-cyan-500/80 font-bold">System Online</span>
+                </div>
             </div>
         </div>
-    </div>
     
     {{-- Línea de Copyright Personalizada --}}
     <div class="max-w-6xl mx-auto px-6 mt-12 pt-8 border-t border-white/[0.02] flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 uppercase tracking-[0.2em] font-mono">
