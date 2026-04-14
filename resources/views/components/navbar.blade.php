@@ -2,20 +2,20 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         
 {{-- Identidad de Marca: Logo + Textos --}}
-        <a href="/" class="font-mono tracking-tight group flex items-center gap-3 w-auto">
-            {{-- Carga del Logo PNG (Tamaño aumentado a h-10) --}}
-            <img src="{{ asset('assets/img/am-correo.png') }}" 
-                 alt="AM Logo" 
-                 class="h-10 w-auto opacity-80 group-hover:opacity-100 transition-all duration-300 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]">
-            
-            {{-- Contenedor de texto --}}
-            <div class="hidden sm:flex items-center gap-2">
-                <span class="text-slate-100 font-bold text-sm">ALVARADO MAZZEI</span>
-                <span class="text-slate-600 font-light">/</span>
-                <span class="text-cyan-500/90 uppercase text-[10px] tracking-widest font-semibold">Full Stack & SysOps</span>
-                <span class="animate-pulse w-1.5 h-4 bg-cyan-500/50"></span>
-            </div>
-        </a>
+<a href="/" class="font-mono tracking-tight group flex items-center gap-3 w-auto">
+    {{-- Carga del Logo con animación de neón permanente --}}
+    <img src="{{ asset('assets/img/am-correo.png') }}" 
+         alt="AM Logo" 
+         class="h-10 w-auto animate-neon-pulse transition-all duration-300 group-hover:brightness-150">
+         
+    {{-- Bloque de texto opcional que ya tenías --}}
+    <div class="hidden sm:flex items-center gap-2">
+        <span class="text-slate-100 font-bold text-sm">ALVARADO MAZZEI</span>
+        <span class="text-slate-600 font-light">/</span>
+        <span class="text-cyan-500/90 uppercase text-[10px] tracking-widest font-semibold">Full Stack & SysOps</span>
+        <span class="animate-pulse w-1.5 h-4 bg-cyan-500/50"></span>
+    </div>
+</a>
         
         {{-- Navegación --}}
         <div class="hidden md:flex space-x-8 text-[11px] font-medium items-center tracking-widest uppercase">
