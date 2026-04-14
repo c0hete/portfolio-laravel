@@ -8,14 +8,19 @@
     {{-- CABECERA ADAPTATIVA: Ajuste de espaciado y alineación --}}
     <div class="relative z-10 flex flex-col sm:flex-row justify-between items-start gap-y-6 sm:gap-x-4 mb-10">
         
-        {{-- LOGO AREA: Aumentamos el tamaño máximo para mejor visibilidad --}}
-        {{-- w-full sm:w-auto para que en móvil tenga espacio de escalado --}}
+{{-- LOGO AREA: Color fijo en móvil, interacción hover en escritorio --}}
         <div class="h-12 md:h-16 w-full sm:w-auto flex items-center justify-start overflow-hidden">
             @if($project->logo)
-                {{-- Aumentamos altura a h-12 md:h-16 y forzamos ancho automático --}}
                 <img src="{{ asset($project->logo) }}" 
                      alt="{{ $project->title }} Logo" 
-                     class="max-w-full h-12 md:h-16 w-auto object-contain opacity-70 group-hover:opacity-100 transition-all grayscale group-hover:grayscale-0">
+                     {{-- Clases de lógica condicional --}}
+                     class="max-w-full h-12 md:h-16 w-auto object-contain transition-all duration-500
+                            {{-- Estado Base (Móvil): Color total y Opacidad total --}}
+                            opacity-100 grayscale-0 
+                            {{-- Estado Desktop (md): Regresa a Gris y Atenuado --}}
+                            md:opacity-70 md:grayscale 
+                            {{-- Interacción Desktop: Se activa al pasar el mouse --}}
+                            md:group-hover:opacity-100 md:group-hover:grayscale-0">
             @else
                 <div class="font-mono text-xs text-slate-700 tracking-tighter uppercase italic">
                     [no_asset_found]
