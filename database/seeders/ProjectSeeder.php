@@ -12,6 +12,28 @@ class ProjectSeeder extends Seeder
      */
 public function run(): void
 {
+        // Proyecto 4: AULA VIRTUAL ENERGIZA
+    Project::create([
+        'title'       => 'AULA VIRTUAL ENERGIZA',
+        'category'    => 'EDTECH & E-LEARNING (LMS)',
+        'role'        => 'LMS Architect & SysAdmin',
+        'description' => 'Implementación y despliegue de plataforma de aprendizaje basada en Moodle. Configuración de entorno LAMP optimizado para alta concurrencia, gestión de backups automatizados y personalización de rutas de aprendizaje para programas de capacitación técnica y habilidades digitales.',
+        'stack'       => ['Moodle (LMS)', 'PHP 8.2', 'MySQL', 'Ubuntu Server', 'Apache / Nginx'],
+        'url'         => 'https://aula.energizavirtual.cl', 
+        'logo'        => 'assets/img/moodle_logo.png', 
+    ]);
+
+    // Proyecto 5: MEET ENERGIZA (BBB con Mediasoup)
+    Project::create([
+        'title'       => 'MEET ENERGIZA (BIGBLUEBUTTON)',
+        'category'    => 'COMUNICACIONES & WEBRTC',
+        'role'        => 'DevOps & Platform Architect',
+        'description' => 'Despliegue de infraestructura de videoconferencia de alta escalabilidad. Migración a arquitectura basada en Mediasoup para optimización de recursos SFU, garantizando baja latencia en sesiones masivas y seguridad perimetral mediante Nginx Reverse Proxy.',
+        'stack'       => ['BigBlueButton', 'Mediasoup (SFU)', 'WebRTC', 'Greenlight', 'Redis'],
+        'url'         => 'https://meet.energizavirtual.cl',
+        'logo'        => 'assets/img/bbb_logo.png',
+    ]);
+    
     // Proyecto 1: VANADIO (Blindado)
     Project::create([
         'title'       => 'VANADIO',
@@ -45,27 +67,7 @@ public function run(): void
         'logo'        => 'assets/img/sustantiva_logo.png',
     ]);
 
-    // Proyecto 4: AULA VIRTUAL ENERGIZA
-    Project::create([
-        'title'       => 'AULA VIRTUAL ENERGIZA',
-        'category'    => 'EDTECH & E-LEARNING (LMS)',
-        'role'        => 'LMS Architect & SysAdmin',
-        'description' => 'Implementación y despliegue de plataforma de aprendizaje basada en Moodle. Configuración de entorno LAMP optimizado para alta concurrencia, gestión de backups automatizados y personalización de rutas de aprendizaje para programas de capacitación técnica y habilidades digitales.',
-        'stack'       => ['Moodle (LMS)', 'PHP 8.2', 'MySQL', 'Ubuntu Server', 'Apache / Nginx'],
-        'url'         => 'https://aula.energizavirtual.cl', 
-        'logo'        => 'assets/img/moodle_logo.png', 
-    ]);
 
-    // Proyecto 5: MEET ENERGIZA (BBB con Mediasoup)
-    Project::create([
-        'title'       => 'MEET ENERGIZA (BIGBLUEBUTTON)',
-        'category'    => 'COMUNICACIONES & WEBRTC',
-        'role'        => 'DevOps & Platform Architect',
-        'description' => 'Despliegue de infraestructura de videoconferencia de alta escalabilidad. Migración a arquitectura basada en Mediasoup para optimización de recursos SFU, garantizando baja latencia en sesiones masivas y seguridad perimetral mediante Nginx Reverse Proxy.',
-        'stack'       => ['BigBlueButton', 'Mediasoup (SFU)', 'WebRTC', 'Greenlight', 'Redis'],
-        'url'         => 'https://meet.energizavirtual.cl',
-        'logo'        => 'assets/img/bbb_logo.png',
-    ]);
 
     // Proyecto 6: SERVIDOR DE CORREO PRIVADO (MAILCOW)
     Project::create([
