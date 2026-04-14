@@ -4,9 +4,11 @@
 {{-- Identidad de Marca: Logo + Textos --}}
 <a href="/" class="font-mono tracking-tight group flex items-center gap-3 w-auto">
     {{-- Carga del Logo con animación de neón permanente --}}
-    <img src="{{ asset('assets/img/am-correo.png') }}" 
-         alt="AM Logo" 
-         class="h-10 w-auto animate-neon-pulse transition-all duration-300 group-hover:brightness-150">
+<img src="{{ asset('assets/img/am-correo.png') }}" 
+     alt="AM Logo" 
+     class="h-10 w-auto animate-neon-pulse transition-all duration-300 
+            group-hover:opacity-100 group-hover:brightness-125 
+            group-hover:drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]">
          
     {{-- Bloque de texto opcional que ya tenías --}}
     <div class="hidden sm:flex items-center gap-2">

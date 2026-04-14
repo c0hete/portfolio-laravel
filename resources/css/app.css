@@ -23,3 +23,7 @@
         }
     }
 }
+/* Añadimos esta regla fuera del @theme para controlar la pausa */
+.animate-neon-pulse:hover {
+    animation-play-state: paused;
+}
