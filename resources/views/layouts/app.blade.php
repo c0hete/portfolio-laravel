@@ -1,14 +1,23 @@
-<!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {{-- Título actualizado a la nueva marca --}}
-    <title>@yield('title', 'Alvarado Mazzei — Full Stack & DevOps')</title>
     
-    {{-- Favicon del Sistema Inyectado --}}
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/am-correo.png') }}">
+    {{-- Título de la pestaña --}}
+    <title>@yield('title', 'Alvarado Mazzei — Full Stack & Infrastructure Engineer')</title>
 
+    {{-- Meta tags para Redes Sociales (WhatsApp, LinkedIn, Twitter) --}}
+    <meta property="og:title" content="Alvarado Mazzei — Full Stack & Infrastructure Engineer">
+    <meta name="description" content="Especialista en Laravel y Linux Ops enfocado en infraestructuras críticas y sistemas distribuidos.">
+    <meta property="og:description" content="Especialista en Laravel y Linux Ops enfocado en infraestructuras críticas y sistemas distribuidos.">
+    <meta property="og:url" content="https://alvaradomazzei.cl/">
+    <meta property="og:type" content="website">
+    
+    {{-- Opcional: Si tienes una imagen para el preview (puedes usar tu logo AM) --}}
+    <meta property="og:image" content="{{ asset('assets/img/am-correo.png') }}">
+
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/am-correo.png') }}?v=2">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[#020617] text-slate-400 font-sans antialiased overflow-x-hidden">
