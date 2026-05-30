@@ -51,12 +51,15 @@
         </div>
         
         {{-- Call to Action --}}
-        <div class="ml-0 md:ml-auto pt-4 md:pt-0">
+        <div class="ml-0 md:ml-auto pt-4 md:pt-0 flex flex-wrap items-center gap-4">
             <a href="/proyectos" class="group flex items-center gap-3.5 font-mono text-[12px] tracking-widest text-cyan-500 uppercase hover:text-cyan-300 transition-colors px-6 py-3 border border-cyan-500/20 hover:border-cyan-500/50 rounded-sm bg-cyan-500/5">
                 Explorar Proyectos
                 <svg class="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
+            </a>
+            <a href="/sobre-mi" class="group flex items-center gap-3 font-mono text-[12px] tracking-widest text-slate-400 uppercase hover:text-slate-200 transition-colors px-6 py-3 border border-white/10 hover:border-white/30 rounded-sm">
+                Sobre mí
             </a>
         </div>
     </div>

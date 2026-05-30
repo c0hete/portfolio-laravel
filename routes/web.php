@@ -15,6 +15,11 @@ Route::get('/', function () {
     return view('sections.home');
 })->name('home');
 
+// Sobre mí: perfil profesional, experiencia, educación y certificaciones
+Route::get('/sobre-mi', function () {
+    return view('sections.about');
+})->name('about');
+
 // Stack: Infrastructure & Ecosystem
 Route::get('/stack', function () {
     return view('sections.stack');
