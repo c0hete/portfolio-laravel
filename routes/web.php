@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Models\Project;
 use App\Http\Controllers\ContactController;
+use App\Models\Project;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,19 +11,20 @@ use App\Http\Controllers\ContactController;
 */
 
 // Home: Core Identity
-Route::get('/', function () { 
-    return view('sections.home'); 
+Route::get('/', function () {
+    return view('sections.home');
 })->name('home');
 
 // Stack: Infrastructure & Ecosystem
-Route::get('/stack', function () { 
-    return view('sections.stack'); 
+Route::get('/stack', function () {
+    return view('sections.stack');
 })->name('stack');
 
 // Proyectos: Mission Critical Systems
-Route::get('/proyectos', function () { 
-    $projects = Project::all(); 
-    return view('sections.projects', compact('projects')); 
+Route::get('/proyectos', function () {
+    $projects = Project::all();
+
+    return view('sections.projects', compact('projects'));
 })->name('projects.index');
 
 // Contacto: Secure Communication Protocol

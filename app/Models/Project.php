@@ -13,15 +13,15 @@ class Project extends Model
      * Los atributos que se pueden asignar masivamente.
      * Esto permite que el ProjectSeeder funcione sin errores de seguridad.
      */
-protected $fillable = [
-    'title',
-    'category',
-    'role',       
-    'description',
-    'stack',
-    'url',   
-    'logo'      
-];
+    protected $fillable = [
+        'title',
+        'category',
+        'role',
+        'description',
+        'stack',
+        'url',
+        'logo',
+    ];
 
     /**
      * El stack tecnológico se guarda como un JSON en la base de datos.

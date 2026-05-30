@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\HubEventReporter;
+
 require __DIR__.'/vendor/autoload.php';
 
 $app = require_once __DIR__.'/bootstrap/app.php';
@@ -7,7 +9,7 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 echo "Testing HubEventReporter...\n\n";
 
-$hub = app(\App\Services\HubEventReporter::class);
+$hub = app(HubEventReporter::class);
 
 echo "1. Testing AppRegistered event:\n";
 $hub->reportAppRegistered('1.0.0-test', 'local');

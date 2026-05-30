@@ -36,25 +36,25 @@ class SecureHeadersMiddleware
             $vite = 'http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:*';
 
             $csp = "default-src 'self'; "
-                 . "img-src 'self' data:; "
-                 . "style-src 'self' 'unsafe-inline' {$vite}; "
-                 . "font-src 'self' data:; "
-                 . "script-src 'self' {$vite}; "
-                 . "connect-src 'self' {$vite}; "
-                 . "base-uri 'self'; "
-                 . "form-action 'self'; "
-                 . "frame-ancestors 'none';";
+                 ."img-src 'self' data:; "
+                 ."style-src 'self' 'unsafe-inline' {$vite}; "
+                 ."font-src 'self' data:; "
+                 ."script-src 'self' {$vite}; "
+                 ."connect-src 'self' {$vite}; "
+                 ."base-uri 'self'; "
+                 ."form-action 'self'; "
+                 ."frame-ancestors 'none';";
         } else {
             $csp = "default-src 'self'; "
-                 . "img-src 'self' data:; "
-                 . "style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
-                 . "font-src 'self' data:; "
-                 . "script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
-                 . "connect-src 'self'; "
-                 . "base-uri 'self'; "
-                 . "form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
-                 . "upgrade-insecure-requests; " // 🔥 Convierte cualquier intento HTTP en HTTPS
-                 . "frame-ancestors 'none';";
+                 ."img-src 'self' data:; "
+                 ."style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
+                 ."font-src 'self' data:; "
+                 ."script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
+                 ."connect-src 'self'; "
+                 ."base-uri 'self'; "
+                 ."form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
+                 .'upgrade-insecure-requests; ' // 🔥 Convierte cualquier intento HTTP en HTTPS
+                 ."frame-ancestors 'none';";
         }
 
         $response->headers->set('Content-Security-Policy', $csp);

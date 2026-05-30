@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Str;
+use Pdo\Mysql;
 
 return [
 
@@ -61,7 +62,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 // PHP 8.5 deprecó PDO::MYSQL_ATTR_SSL_CA en favor de Pdo\Mysql::ATTR_SSL_CA.
                 // Usamos la nueva clase si existe (8.5+), si no la constante legacy (8.2–8.4).
-                (class_exists(\Pdo\Mysql::class) ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                (class_exists(Mysql::class) ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
@@ -83,7 +84,7 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 // PHP 8.5 deprecó PDO::MYSQL_ATTR_SSL_CA en favor de Pdo\Mysql::ATTR_SSL_CA.
                 // Usamos la nueva clase si existe (8.5+), si no la constante legacy (8.2–8.4).
-                (class_exists(\Pdo\Mysql::class) ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
+                (class_exists(Mysql::class) ? Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
