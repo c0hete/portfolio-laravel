@@ -58,4 +58,17 @@ return [
         'report_errors' => env('HUB_REPORT_ERRORS', true),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Umami Analytics (self-hosted, privacy-first)
+    |--------------------------------------------------------------------------
+    | El script solo se inyecta si ambas variables están seteadas. El website_id
+    | se obtiene al crear el sitio dentro del dashboard de Umami (stats.alvaradomazzei.cl).
+    */
+
+    'umami' => [
+        'src' => env('UMAMI_SRC', 'https://stats.alvaradomazzei.cl/script.js'),
+        'website_id' => env('UMAMI_WEBSITE_ID'),
+    ],
+
 ];

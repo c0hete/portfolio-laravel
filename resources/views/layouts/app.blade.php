@@ -69,6 +69,13 @@
     <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Analytics Umami (privacy-first, sin cookies). Solo se carga si está
+         configurado el website ID en el .env — así no rompe si Umami no está arriba. --}}
+    @if (config('services.umami.website_id') && config('services.umami.src'))
+        <script defer src="{{ config('services.umami.src') }}"
+                data-website-id="{{ config('services.umami.website_id') }}"></script>
+    @endif
 </head>
 <body class="bg-[#020617] text-slate-400 font-sans antialiased overflow-x-hidden">
 
