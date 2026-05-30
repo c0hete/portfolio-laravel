@@ -63,9 +63,6 @@ jobs:
       - name: Lint de estilo — Laravel Pint (modo check, no modifica)
         run: ./vendor/bin/pint --test
 
-      - name: Tests — PHPUnit
-        run: php artisan test
-
       - name: Setup Node 22
         uses: actions/setup-node@v6
         with:
@@ -75,8 +72,13 @@ jobs:
       - name: Instalar deps JS (lockfile congelado)
         run: npm ci
 
+      # Build ANTES de los tests: las vistas usan @vite(), que necesita
+      # public/build/manifest.json. Sin esto, GET / da 500 (manifest not found).
       - name: Build de assets (Vite) — valida que el frontend compila
         run: npm run build
+
+      - name: Tests — PHPUnit
+        run: php artisan test
 
   # ---------------------------------------------------------------------------
   # 2) SEGURIDAD — Software Composition Analysis (SCA).
