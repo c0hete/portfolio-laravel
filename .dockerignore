@@ -1,0 +1,34 @@
+# No copiar al contexto de build lo que se reinstala/compila dentro de la imagen
+# o lo que es secreto/local. Mantiene la imagen chica y evita filtrar credenciales.
+.git
+.gitignore
+.github
+.mente-colmena
+.mc
+CLAUDE.md
+documentacion
+
+# Dependencias: se reinstalan en la imagen (composer install / npm ci)
+vendor
+node_modules
+
+# Secretos y entorno local — el .env real se monta vía env_file en runtime
+.env
+.env.*
+!.env.example
+
+# Artefactos locales / IDE
+public/build
+public/hot
+storage/logs/*.log
+.vscode
+.idea
+
+# Package discovery cacheado en local (incluye dev-deps como Pail) → se regenera
+# limpio dentro del build con --no-dev. Si se copia, da "PailServiceProvider not found".
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+
+# Tests y tooling que no van a la imagen de prod
+phpunit.xml
+tests

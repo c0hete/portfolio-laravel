@@ -1,0 +1,63 @@
+# =====================================================================
+# portfolio-laravel — compose de PRODUCCIÓN (hub, detrás de NPM)
+# Uso en el server:  docker compose -f docker-compose.prod.yml up -d --build
+#
+# Diferencias con el setup viejo (bind mount + imagen ad-hoc):
+#  - app = imagen construida desde docker/php/Dockerfile.prod (código COPY'd, NO bind mount).
+#    El container corre lo que está en la imagen → deploy = rebuild, con rollback claro.
+#  - DB = PostgreSQL 15 (portfolio_db), datos en volumen nombrado persistente.
+#  - app entra a nginx_proxy_network (external, de NPM) para que el proxy la alcance.
+#    (El portafolio usa esta red por historia; las apps nuevas usan nginx_network.)
+#
+# OJO: container_name y nombres de red/volumen se conservan IDÉNTICOS a lo que ya
+# corre en prod (portfolio_app / portfolio_db) para no romper el proxy host de NPM
+# ni perder los datos existentes.
+# =====================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.prod
+    image: portafolio-app
+    container_name: portfolio_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - internal
+      - nginx_proxy_network     # NPM le habla por HTTP a portfolio_app:80
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: portfolio_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-portfolio_db}
+      POSTGRES_USER: ${DB_USERNAME:-admin_bunker}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      # Volumen EXISTENTE de prod (creado por el compose viejo, proyecto 'portafolio').
+      # Nombre exacto verificado en el server: portafolio_db_data. Declarado external
+      # abajo para NO crear uno nuevo vacío y conservar los 5 proyectos reales.
+      - portafolio_db_data:/var/lib/postgresql/data
+    networks:
+      - internal                                # SIN ports al host: aislado
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-admin_bunker} -d ${DB_DATABASE:-portfolio_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  internal:
+    driver: bridge
+  nginx_proxy_network:
+    external: true        # YA existe en el hub
+
+volumes:
+  portafolio_db_data:
+    external: true        # Volumen EXISTENTE con los datos de prod (verificado en server).

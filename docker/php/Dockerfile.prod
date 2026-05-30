@@ -1,0 +1,70 @@
+# portfolio-laravel — imagen de PRODUCCIÓN (hub: php:8.4-apache, igual que crono/iacode/bitacora).
+# El TLS lo termina NPM (nginx) por delante; acá solo Apache HTTP en :80 interno.
+# Multi-stage: 1) build de assets (Vite 8 + Tailwind 4) con Node, 2) runtime PHP 8.4.
+# Patrón base tomado de crono (docker/php/Dockerfile.prod), + stage de assets que crono no tiene.
+
+# ---------------------------------------------------------------------------
+# Stage 1 — Build de assets (Vite 8 + Tailwind 4)
+# ---------------------------------------------------------------------------
+FROM node:22-alpine AS assets
+WORKDIR /app
+# Solo lo necesario para resolver dependencias primero (mejor caché de capas)
+COPY package.json package-lock.json ./
+RUN npm ci
+# El resto del código (resources/, vite.config.js, etc.) y build
+COPY . .
+RUN npm run build      # genera public/build/ (manifest + assets con hash)
+
+# ---------------------------------------------------------------------------
+# Stage 2 — Runtime PHP 8.4 + Apache
+# ---------------------------------------------------------------------------
+FROM php:8.4-apache
+
+# DocumentRoot a /var/www/html/public + rewrite (patrón DEPLOY_LARAVEL_HUB)
+RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf \
+    && sed -ri 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
+    && a2enmod rewrite
+
+# Libs de sistema + extensiones PHP. pdo_pgsql porque la DB de prod es PostgreSQL 15.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      git unzip libicu-dev libzip-dev libpng-dev libjpeg-dev libwebp-dev \
+      libfreetype6-dev libonig-dev libpq-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype \
+    && docker-php-ext-install -j"$(nproc)" pdo_pgsql pgsql mbstring zip gd bcmath intl opcache \
+    && rm -rf /var/lib/apt/lists/*
+
+# Opcache: ON pero validando timestamps (lección 24 del hub — evita 500s intermitentes).
+RUN { \
+      echo 'opcache.enable=1'; \
+      echo 'opcache.validate_timestamps=1'; \
+      echo 'opcache.revalidate_freq=2'; \
+      echo 'opcache.memory_consumption=128'; \
+      echo 'opcache.max_accelerated_files=10000'; \
+    } > /usr/local/etc/php/conf.d/opcache.ini
+
+# Composer (para instalar vendor en build y por si hace falta dump-autoload en runtime)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Código de la app
+COPY --chown=www-data:www-data . /var/www/html
+WORKDIR /var/www/html
+
+# Assets compilados del stage 1 (sobrescriben cualquier public/build viejo del contexto)
+COPY --from=assets --chown=www-data:www-data /app/public/build /var/www/html/public/build
+
+# Dependencias PHP de producción (sin dev, autoloader optimizado).
+# --no-scripts evita correr artisan sin .env; luego regeneramos el package discovery
+# limpio (sin dev-deps) para que no quede colgado un provider de dev (ej. Pail).
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts \
+    && php artisan package:discover --ansi
+
+# Permisos Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Entrypoint: re-chownea storage y cachea config/route en runtime (no view — innecesario acá).
+COPY docker/php/entrypoint-prod.sh /usr/local/bin/entrypoint-prod.sh
+RUN chmod +x /usr/local/bin/entrypoint-prod.sh
+
+EXPOSE 80
+ENTRYPOINT ["entrypoint-prod.sh"]
