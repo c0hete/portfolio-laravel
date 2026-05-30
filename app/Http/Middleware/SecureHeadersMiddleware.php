@@ -32,6 +32,11 @@ class SecureHeadersMiddleware
         // estilos. Solo en `local` añadimos ese origen y el websocket del HMR, y NO
         // forzamos upgrade-insecure-requests (rompería el HMR que va por HTTP).
         // En producción la CSP queda estricta e intacta.
+        // Dominio del Umami self-hosted: el navegador carga su script.js (script-src)
+        // y le envía los pageviews por fetch (connect-src). Sin esto, la CSP estricta
+        // bloquea el tracking en TODOS los navegadores (el server acepta, el browser frena).
+        $umami = 'https://stats.alvaradomazzei.cl';
+
         if (app()->environment('local')) {
             $vite = 'http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:*';
 
@@ -39,8 +44,8 @@ class SecureHeadersMiddleware
                  ."img-src 'self' data:; "
                  ."style-src 'self' 'unsafe-inline' {$vite}; "
                  ."font-src 'self' data:; "
-                 ."script-src 'self' {$vite}; "
-                 ."connect-src 'self' {$vite}; "
+                 ."script-src 'self' {$vite} {$umami}; "
+                 ."connect-src 'self' {$vite} {$umami}; "
                  ."base-uri 'self'; "
                  ."form-action 'self'; "
                  ."frame-ancestors 'none';";
@@ -49,8 +54,8 @@ class SecureHeadersMiddleware
                  ."img-src 'self' data:; "
                  ."style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
                  ."font-src 'self' data:; "
-                 ."script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
-                 ."connect-src 'self'; "
+                 ."script-src 'self' {$umami}; " // 'self' + script de Umami (analytics self-hosted)
+                 ."connect-src 'self' {$umami}; " // 'self' + envío de pageviews a Umami
                  ."base-uri 'self'; "
                  ."form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
                  .'upgrade-insecure-requests; ' // 🔥 Convierte cualquier intento HTTP en HTTPS
