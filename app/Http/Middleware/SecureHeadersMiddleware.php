@@ -26,16 +26,36 @@ class SecureHeadersMiddleware
         }
 
         // Content Security Policy (Optimizado para Producción + Terminal JS)
-        $csp = "default-src 'self'; "
-             . "img-src 'self' data:; "
-             . "style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
-             . "font-src 'self' data:; "
-             . "script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
-             . "connect-src 'self'; "
-             . "base-uri 'self'; "
-             . "form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
-             . "upgrade-insecure-requests; " // 🔥 Convierte cualquier intento HTTP en HTTPS
-             . "frame-ancestors 'none';";
+        //
+        // En desarrollo local, Vite sirve los assets (CSS/JS/HMR) desde otro origen
+        // (http://127.0.0.1:<puerto-vite>), que la CSP estricta rechaza → front sin
+        // estilos. Solo en `local` añadimos ese origen y el websocket del HMR, y NO
+        // forzamos upgrade-insecure-requests (rompería el HMR que va por HTTP).
+        // En producción la CSP queda estricta e intacta.
+        if (app()->environment('local')) {
+            $vite = 'http://127.0.0.1:* http://localhost:* ws://127.0.0.1:* ws://localhost:*';
+
+            $csp = "default-src 'self'; "
+                 . "img-src 'self' data:; "
+                 . "style-src 'self' 'unsafe-inline' {$vite}; "
+                 . "font-src 'self' data:; "
+                 . "script-src 'self' {$vite}; "
+                 . "connect-src 'self' {$vite}; "
+                 . "base-uri 'self'; "
+                 . "form-action 'self'; "
+                 . "frame-ancestors 'none';";
+        } else {
+            $csp = "default-src 'self'; "
+                 . "img-src 'self' data:; "
+                 . "style-src 'self' 'unsafe-inline'; " // Necesario para Tailwind/Animaciones
+                 . "font-src 'self' data:; "
+                 . "script-src 'self'; " // Estricto: Solo permite archivos JS externos (Vite)
+                 . "connect-src 'self'; "
+                 . "base-uri 'self'; "
+                 . "form-action 'self' https://alvaradomazzei.cl https://*.alvaradomazzei.cl; "
+                 . "upgrade-insecure-requests; " // 🔥 Convierte cualquier intento HTTP en HTTPS
+                 . "frame-ancestors 'none';";
+        }
 
         $response->headers->set('Content-Security-Policy', $csp);
 

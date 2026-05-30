@@ -64,3 +64,7 @@ INTEGRATION_STATUS.md
 # Permitir solo el README del proyecto
 # (El README es público y va al repo)
 
+
+# Marcador y memoria de mente-colmena (paraguas local, no versionar)
+.mc
+.mente-colmena/

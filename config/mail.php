@@ -14,7 +14,8 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    // Default 'smtp' (no 'log'): el formulario de contacto envía vía mailcow propio.
+    'default' => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,10 +44,22 @@ return [
             'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+
+            // El mailcow se alcanza por IP, así que el cert TLS no matchea el host.
+            // Cuando MAIL_TLS_INSECURE=true se relaja la verificación del cert SOLO
+            // para esa conexión (se conecta por IP a infra propia, no a un tercero).
+            'stream' => env('MAIL_TLS_INSECURE', false) ? [
+                'ssl' => [
+                    'allow_self_signed' => true,
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ] : null,
         ],
 
         'ses' => [
@@ -111,8 +124,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'web@alvaradomazzei.cl'),
+        'name' => env('MAIL_FROM_NAME', 'Búnker Alvarado Mazzei'),
     ],
 
 ];
