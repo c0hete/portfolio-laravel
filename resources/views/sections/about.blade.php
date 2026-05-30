@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Sobre mí — José Alvarado Mazzei')
+@section('description', 'Analista Programador (INACAP) y Full Stack Developer con 3+ años en Laravel/PHP, en transición a DevSecOps. Experiencia en infraestructura Linux, CI/CD seguro y cloud. Disponible para trabajo remoto.')
 
 @section('content')
 <section class="max-w-5xl mx-auto px-6 py-16 md:py-24">

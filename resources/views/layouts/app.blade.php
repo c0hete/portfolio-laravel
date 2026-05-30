@@ -1,23 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    {{-- Título de la pestaña --}}
-    <title>@yield('title', 'Alvarado Mazzei — Full Stack & Infrastructure Engineer')</title>
 
-    {{-- Meta tags para Redes Sociales (WhatsApp, LinkedIn, Twitter) --}}
-    <meta property="og:title" content="Alvarado Mazzei — Full Stack & Infrastructure Engineer">
-    <meta name="description" content="Especialista en Laravel y Linux Ops enfocado en infraestructuras críticas y sistemas distribuidos.">
-    <meta property="og:description" content="Especialista en Laravel y Linux Ops enfocado en infraestructuras críticas y sistemas distribuidos.">
-    <meta property="og:url" content="https://alvaradomazzei.cl/">
+    {{-- Título y descripción (cada vista puede sobreescribir con sus propias secciones) --}}
+    @php
+        $metaTitle = trim($__env->yieldContent('title', 'José Alvarado Mazzei — Full Stack & Infrastructure Engineer'));
+        $metaDescription = trim($__env->yieldContent('description', 'Desarrollador Full Stack (Laravel/PHP) en transición a DevSecOps. CI/CD con seguridad integrada, hardening de infraestructura Linux y arquitectura cloud segura. Temuco, Chile — remoto.'));
+        $canonical = url()->current();
+        $ogImage = asset('assets/img/am-correo.png');
+    @endphp
+
+    <title>{{ $metaTitle }}</title>
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="author" content="José Alvarado Mazzei">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="{{ $canonical }}">
+
+    {{-- Open Graph (LinkedIn, WhatsApp, Facebook) --}}
     <meta property="og:type" content="website">
-    
-    {{-- Opcional: Si tienes una imagen para el preview (puedes usar tu logo AM) --}}
-    <meta property="og:image" content="{{ asset('assets/img/am-correo.png') }}">
+    <meta property="og:site_name" content="José Alvarado Mazzei">
+    <meta property="og:locale" content="es_CL">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $canonical }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:alt" content="Logo AM — José Alvarado Mazzei">
+
+    {{-- Twitter / X Cards --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
 
     {{-- Favicon --}}
     <link rel="icon" type="image/png" href="{{ asset('assets/img/am-correo.png') }}?v=2">
-    
+
+    {{-- JSON-LD Schema.org: le dice a Google que esto es una Persona/profesional.
+         Se genera con json_encode (no JSON literal) para que las claves @context/@type
+         no choquen con las directivas de Blade. --}}
+    @php
+        $jsonLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'Person',
+            'name' => 'José Alvarado Mazzei',
+            'url' => 'https://alvaradomazzei.cl',
+            'image' => $ogImage,
+            'jobTitle' => 'Full Stack Developer & Infrastructure Engineer',
+            'email' => 'mailto:jose@alvaradomazzei.cl',
+            'address' => [
+                '@type' => 'PostalAddress',
+                'addressLocality' => 'Temuco',
+                'addressRegion' => 'La Araucanía',
+                'addressCountry' => 'CL',
+            ],
+            'alumniOf' => [
+                '@type' => 'CollegeOrUniversity',
+                'name' => 'Universidad Tecnológica de Chile INACAP',
+            ],
+            'knowsAbout' => ['Laravel', 'PHP', 'DevSecOps', 'CI/CD', 'Docker', 'Linux', 'AWS', 'Ciberseguridad', 'PostgreSQL', 'MySQL'],
+            'sameAs' => [
+                'https://github.com/c0hete',
+                'https://linkedin.com/in/josealvaradomazzeies',
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[#020617] text-slate-400 font-sans antialiased overflow-x-hidden">

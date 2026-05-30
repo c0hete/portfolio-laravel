@@ -39,3 +39,18 @@ Route::get('/contacto', function () {
 
 // Acción de Envío (POST)
 Route::post('/contacto', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Sitemap dinámico (se mantiene solo al agregar rutas acá)
+Route::get('/sitemap.xml', function () {
+    $urls = [
+        ['loc' => url('/'), 'priority' => '1.0', 'changefreq' => 'monthly'],
+        ['loc' => url('/sobre-mi'), 'priority' => '0.9', 'changefreq' => 'monthly'],
+        ['loc' => url('/proyectos'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['loc' => url('/stack'), 'priority' => '0.7', 'changefreq' => 'yearly'],
+        ['loc' => url('/contacto'), 'priority' => '0.6', 'changefreq' => 'yearly'],
+    ];
+
+    return response()
+        ->view('sitemap', ['urls' => $urls])
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');

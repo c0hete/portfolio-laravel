@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Terminal de Contacto — José Alvarado')
+@section('title', 'Contacto — José Alvarado Mazzei')
+@section('description', 'Ponte en contacto con José Alvarado Mazzei para oportunidades laborales remotas en Full Stack, DevOps o DevSecOps. Respuesta en 24-48h.')
 
 @section('content')
 <section class="max-w-5xl mx-auto px-6 py-24 min-h-[80vh] flex flex-col justify-center">

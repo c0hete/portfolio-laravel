@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Sistemas & Despliegues — José Alvarado')
+@section('title', 'Proyectos — José Alvarado Mazzei')
+@section('description', 'Proyectos de infraestructura y desarrollo: plataformas LMS (Moodle), videoconferencia (BigBlueButton), control de asistencia biométrico y correo corporativo (Mailcow). Arquitecturas de alta disponibilidad.')
 
 @section('content')
 <section class="max-w-6xl mx-auto px-6 py-12">

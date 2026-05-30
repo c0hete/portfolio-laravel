@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Stack Tecnológico — Infraestructura & Core')
+@section('title', 'Stack Tecnológico — José Alvarado Mazzei')
+@section('description', 'Stack técnico: Laravel/PHP 8.x, PostgreSQL/MySQL, Redis, Docker, Linux hardening, OpenVAS, despliegues enterprise. Ingeniería de software + operaciones de seguridad.')
 
 @section('content')
 <section class="max-w-5xl mx-auto px-6 py-16">
