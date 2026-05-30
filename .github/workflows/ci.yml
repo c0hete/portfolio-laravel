@@ -146,7 +146,9 @@ jobs:
     name: Deploy al hub (Docker)
     runs-on: ubuntu-latest
     needs: [quality, security, secrets]
-    if: github.event_name == 'workflow_dispatch'
+    # Auto-deploy: cada push a main que pase los 3 gates despliega a prod.
+    # (También se puede disparar a mano con "Run workflow" / workflow_dispatch.)
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment: production
     steps:
       - name: Deploy vía SSH
