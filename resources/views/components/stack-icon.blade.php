@@ -1,22 +1,26 @@
 @props(['name', 'level', 'color' => 'cyan'])
 
 @php
-    // Definimos el ancho según tus nuevos niveles técnicos
-    $percentage = match($level) {
-        'senior_level', 'senior_architect' => '100%',
-        'orchestrated', 'hardened', 'enterprise_deploy' => '90%',
-        'optimized', 'full_stack_integrated' => '85%',
-        'audited' => '75%',
-        default => '80%',
+    // Traducimos la clave técnica a una etiqueta honesta y legible (sin barras de % inventadas).
+    $label = match($level) {
+        'senior_level'           => 'Producción · Diario',
+        'senior_architect'       => 'Diseño de esquemas',
+        'optimized'              => 'Caché / colas',
+        'full_stack_integrated'  => 'Front + Back',
+        'orchestrated'           => 'Multi-contenedor',
+        'hardened'               => 'Hardening aplicado',
+        'audited'                => 'Auditoría de vulns',
+        'enterprise_deploy'      => 'Despliegues reales',
+        default                  => 'En uso',
     };
 @endphp
 
-<div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-{{ $color }}-500/50 transition-all group">
-    <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-mono text-{{ $color }}-400">{{ $name }}</span>
-        <span class="text-[10px] text-slate-500 uppercase tracking-widest">{{ $level }}</span>
-    </div>
-    <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
-        <div class="bg-{{ $color }}-500 h-full transition-all duration-1000" style="width: {{ $percentage }}"></div>
-    </div>
+{{-- Clase cyan fija: Tailwind v4 no compila clases interpoladas como border-{$color}-500
+     (el JIT no las "ve" en el source y las purga). Si algún día se necesitan otros colores,
+     mapear con un match() a clases literales completas. --}}
+<div class="flex items-center justify-between gap-4 p-4 rounded-lg bg-slate-900/40 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900/70 transition-colors duration-200 group">
+    <span class="text-sm font-mono text-slate-200 group-hover:text-cyan-300 transition-colors">{{ $name }}</span>
+    <span class="shrink-0 font-mono text-[9px] text-cyan-400/70 uppercase tracking-widest whitespace-nowrap px-2.5 py-1 rounded bg-cyan-500/5 border border-cyan-500/15">
+        {{ $label }}
+    </span>
 </div>

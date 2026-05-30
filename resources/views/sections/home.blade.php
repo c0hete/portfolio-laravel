@@ -13,7 +13,7 @@
             </span>
             <span class="font-mono text-[11px] tracking-[0.2em] text-cyan-400 uppercase">System Status: Active</span>
         </div>
-        <span class="font-mono text-[11px] text-slate-600 uppercase tracking-widest">Node: vmi-2929444.cl</span>
+        <span class="font-mono text-[11px] text-slate-600 uppercase tracking-widest">Temuco, CL — Remote Ready</span>
     </div>
     
     {{-- Título --}}

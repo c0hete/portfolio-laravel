@@ -72,9 +72,9 @@
 
             {{-- META DATA --}}
             <div id="system-meta" class="hidden md:block font-mono text-[9px] text-slate-600 uppercase leading-relaxed tracking-tighter">
-                Connection: Persistent <br/> 
-                Trace: {{ request()->ip() ?? '127.0.0.1' }} <br/>
-                Hops: 12-nodes-active
+                Connection: Secure (TLS) <br/>
+                Channel: SMTP / alvaradomazzei.cl <br/>
+                Response: 24-48h
             </div>
             
             <button type="submit" id="submit-btn" class="group relative px-10 py-5 bg-cyan-500/5 border border-cyan-500/40 text-cyan-400 font-mono text-[11px] uppercase tracking-[0.3em] overflow-hidden hover:bg-cyan-500/10 hover:border-cyan-400 transition-all active:scale-95 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]">
