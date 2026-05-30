@@ -15,7 +15,13 @@
     <title>{{ $metaTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
     <meta name="author" content="José Alvarado Mazzei">
-    <meta name="robots" content="index, follow, max-image-preview:large">
+    {{-- En staging/local NO indexar (evita contenido duplicado y que el entorno de
+         pruebas aparezca en Google). Solo producción es indexable. --}}
+    @if (app()->environment('production'))
+        <meta name="robots" content="index, follow, max-image-preview:large">
+    @else
+        <meta name="robots" content="noindex, nofollow">
+    @endif
     <link rel="canonical" href="{{ $canonical }}">
 
     {{-- Open Graph (LinkedIn, WhatsApp, Facebook) --}}

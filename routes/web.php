@@ -40,6 +40,19 @@ Route::get('/contacto', function () {
 // Acción de Envío (POST)
 Route::post('/contacto', [ContactController::class, 'submit'])->name('contact.submit');
 
+// robots.txt dinámico: en prod permite indexar; en staging/local bloquea TODO
+// (que Google no indexe el entorno de pruebas). Sirve como ruta porque el archivo
+// estático no conoce el entorno.
+Route::get('/robots.txt', function () {
+    if (app()->environment('production')) {
+        $body = "User-agent: *\nAllow: /\n\nSitemap: ".url('/sitemap.xml')."\n";
+    } else {
+        $body = "User-agent: *\nDisallow: /\n";
+    }
+
+    return response($body, 200)->header('Content-Type', 'text/plain');
+})->name('robots');
+
 // Sitemap dinámico (se mantiene solo al agregar rutas acá)
 Route::get('/sitemap.xml', function () {
     $urls = [

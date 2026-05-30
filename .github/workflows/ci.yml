@@ -13,9 +13,9 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
   workflow_dispatch:
 
 concurrency:
@@ -134,20 +134,51 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # ---------------------------------------------------------------------------
-  # 4) DEPLOY — publica la versión nueva sobre el hub (ya aprovisionado).
-  #    Flujo Docker: git pull -> up -d --build -> migrate --force -> caches.
-  #
-  #    GUARD: hoy solo corre por disparo manual (workflow_dispatch). Para activar
-  #    deploy automático en cada push a main, cambiar el `if` de abajo a:
-  #        if: github.ref == 'refs/heads/main'
-  #    (ver documentacion/CICD.md → "Activar el deploy automático").
+  # 4a) DEPLOY STAGING — push a `develop` → staging.alvaradomazzei.cl.
+  #     Entorno de pre-producción. Mismo flujo Docker que prod, pero compose,
+  #     path y secrets propios (DEPLOY_STAGING_*). Aislado de producción.
   # ---------------------------------------------------------------------------
-  deploy:
-    name: Deploy al hub (Docker)
+  deploy-staging:
+    name: Deploy a staging (Docker)
     runs-on: ubuntu-latest
     needs: [quality, security, secrets]
-    # Auto-deploy: cada push a main que pase los 3 gates despliega a prod.
-    # (También se puede disparar a mano con "Run workflow" / workflow_dispatch.)
+    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+    environment: staging
+    steps:
+      - name: Deploy vía SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          port: ${{ secrets.DEPLOY_PORT }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          command_timeout: 15m
+          script: |
+            set -euo pipefail
+            cd "${{ secrets.DEPLOY_STAGING_PATH }}"
+            echo "==> git pull develop"
+            git config core.fileMode false
+            git fetch origin develop
+            git reset --hard origin/develop
+            echo "==> rebuild + up (staging)"
+            docker compose -f docker-compose.staging.yml up -d --build
+            echo "==> migrate (staging)"
+            docker compose -f docker-compose.staging.yml exec -T app php artisan migrate --force
+            echo "==> seed de proyectos demo (staging es desechable, seed idempotente)"
+            docker compose -f docker-compose.staging.yml exec -T app php artisan db:seed --class=ProjectSeeder --force || true
+            echo "==> caches (config + route)"
+            docker compose -f docker-compose.staging.yml exec -T app php artisan config:cache
+            docker compose -f docker-compose.staging.yml exec -T app php artisan route:cache
+            echo "==> deploy staging OK"
+
+  # ---------------------------------------------------------------------------
+  # 4b) DEPLOY PROD — push a `main` → alvaradomazzei.cl.
+  #     Auto-deploy tras pasar los 3 gates. También disparable a mano.
+  # ---------------------------------------------------------------------------
+  deploy-prod:
+    name: Deploy a producción (Docker)
+    runs-on: ubuntu-latest
+    needs: [quality, security, secrets]
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment: production
     steps:

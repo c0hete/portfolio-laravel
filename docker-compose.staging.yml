@@ -1,0 +1,55 @@
+# =====================================================================
+# portfolio-laravel — compose de STAGING (hub, detrás de NPM)
+# Uso en el server:  docker compose -f docker-compose.staging.yml up -d --build
+#
+# Entorno de pre-producción para staging.alvaradomazzei.cl. Aislado de prod:
+# containers, DB y volumen propios. La app corre con APP_ENV=staging (vía .env),
+# lo que activa noindex + robots Disallow (no compite con el sitio real en Google).
+#
+# Mismo Dockerfile.prod que producción (paridad de imagen). Lo único que cambia
+# es el .env (APP_ENV, APP_URL, DB, credenciales) y los nombres de los recursos.
+# =====================================================================
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.prod
+    image: portafolio-staging-app
+    container_name: portfolio_staging_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - internal
+      - nginx_network          # NPM le habla por HTTP a portfolio_staging_app:80
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: portfolio_staging_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-portfolio_staging}
+      POSTGRES_USER: ${DB_USERNAME:-staging}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - portfolio-staging-db:/var/lib/postgresql/data
+    networks:
+      - internal              # SIN ports al host
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-staging} -d ${DB_DATABASE:-portfolio_staging}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+networks:
+  internal:
+    driver: bridge
+  nginx_network:
+    external: true
+
+volumes:
+  portfolio-staging-db:
