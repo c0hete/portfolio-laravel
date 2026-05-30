@@ -99,8 +99,10 @@ jobs:
           coverage: none
           tools: composer:v2
 
-      - name: Auditar dependencias PHP — composer audit (solo prod)
-        run: composer audit --no-dev
+      - name: Auditar dependencias PHP — composer audit (sobre el lock)
+        # --locked audita el composer.lock SIN instalar vendor/ (más rápido en CI).
+        # Sin esto falla con "No installed packages found".
+        run: composer audit --locked
 
       - name: Setup Node 22
         uses: actions/setup-node@v6
@@ -109,7 +111,8 @@ jobs:
           cache: npm
 
       - name: Auditar dependencias JS — npm audit (high+)
-        run: npm audit --audit-level=high
+        # --package-lock-only audita el lockfile sin instalar node_modules (rápido en CI).
+        run: npm audit --audit-level=high --package-lock-only
 
   # ---------------------------------------------------------------------------
   # 3) SECRETOS — gitleaks sobre código e historial. Gate: si alguien commitea
