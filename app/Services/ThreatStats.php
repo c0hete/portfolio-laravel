@@ -29,11 +29,18 @@ class ThreatStats
      * Si la tabla está vacía o la DB falla → total 0 y top [] (la vista decide
      * mostrar solo el bloque histórico).
      */
-    public function stats(int $topLimit = 6): array
+    /** Cadencia de refresco del contador en vivo (segundos). Mostrada en la vista. */
+    public const REFRESH_SECONDS = 30;
+
+    public function stats(int $topLimit = 6, bool $fresh = false): array
     {
         $empty = ['total' => 0, 'secretos' => 0, 'top' => [], 'desde' => null];
 
-        return Cache::remember('threat.stats', now()->addSeconds(60), function () use ($topLimit, $empty) {
+        if ($fresh) {
+            Cache::forget('threat.stats');
+        }
+
+        return Cache::remember('threat.stats', now()->addSeconds(self::REFRESH_SECONDS), function () use ($topLimit, $empty) {
             try {
                 $rows = DB::table('threat_probes')
                     ->select('pattern', 'category', 'hits')
