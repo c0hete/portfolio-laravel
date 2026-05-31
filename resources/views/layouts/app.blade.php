@@ -7,7 +7,7 @@
     {{-- Título y descripción (cada vista puede sobreescribir con sus propias secciones) --}}
     @php
         $metaTitle = trim($__env->yieldContent('title', 'José Alvarado Mazzei — Full Stack Developer & DevSecOps'));
-        $metaDescription = trim($__env->yieldContent('description', 'Desarrollador Full Stack (Laravel/PHP) en transición a DevSecOps. CI/CD con seguridad integrada, hardening de infraestructura Linux y arquitectura cloud segura. Temuco, Chile — remoto.'));
+        $metaDescription = trim($__env->yieldContent('description', 'Desarrollador Full Stack (Laravel/PHP) en transición a DevSecOps. CI/CD con seguridad integrada, hardening de infraestructura Linux y arquitectura cloud segura. Temuco, Chile. Remoto.'));
         $canonical = url()->current();
         $ogImage = asset('assets/img/am-correo.png');
     @endphp

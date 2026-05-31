@@ -1,7 +1,15 @@
 @props(['project'])
 
-<article class="group relative flex flex-col h-full bg-[#030712]/50 border border-white/5 p-6 md:p-8 transition-all duration-300 hover:border-cyan-500/30 hover:bg-[#030712]/80">
-    
+@php
+    // Si hay URL, toda la card es un enlace; si no, es un contenedor estático.
+    $tag = $project->url ? 'a' : 'div';
+    $linkAttrs = $project->url
+        ? 'href="'.e($project->url).'" target="_blank" rel="noopener noreferrer" aria-label="Abrir '.e($project->title).' en una pestaña nueva"'
+        : '';
+@endphp
+
+<{{ $tag }} {!! $linkAttrs !!} class="group relative flex flex-col h-full bg-[#030712]/50 border border-white/5 p-6 md:p-8 transition-all duration-300 hover:border-cyan-500/30 hover:bg-[#030712]/80 {{ $project->url ? 'cursor-pointer' : '' }}">
+
     {{-- Efecto de Iluminación Sutil (Mantenemos) --}}
     <div class="absolute -right-px -top-px w-32 h-32 bg-cyan-500/5 blur-3xl group-hover:bg-cyan-500/10 transition-all duration-500 pointer-events-none"></div>
 
@@ -60,23 +68,21 @@
         {{ $project->description }}
     </p>
     
-    {{-- FOOTER: Stack Tecnológico - LEGUIBILIDAD MEJORADA --}}
-    {{-- Ajustamos espaciado superior y gap, y aumentamos tamaño de fuente --}}
-    <div class="relative z-10 flex flex-wrap gap-x-6 gap-y-3 mt-auto pt-8 border-t border-white/5">
+    {{-- FOOTER: Stack tecnológico + indicador de enlace (la card entera es el link) --}}
+    <div class="relative z-10 flex flex-wrap items-center gap-x-6 gap-y-3 mt-auto pt-8 border-t border-white/5">
         @foreach($project->stack as $tech)
-            {{-- Fuente aumentada de text-[9px] a text-[11px] md:text-xs --}}
-            <span class="font-mono text-[11px] md:text-xs text-slate-600 hover:text-cyan-400/70 transition-colors cursor-default whitespace-nowrap">
+            <span class="font-mono text-[11px] md:text-xs text-slate-600 whitespace-nowrap">
                 <span class="text-cyan-500/20">#</span>{{ strtolower($tech) }}
             </span>
         @endforeach
-    </div>
 
-    {{-- LINK ACCIÓN --}}
-    @if($project->url)
-        <a href="{{ $project->url }}" target="_blank" class="absolute bottom-6 right-8 text-slate-700 hover:text-cyan-400 transition-all hover:scale-110 p-2 bg-slate-950/50 rounded-full border border-white/5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
-            </svg>
-        </a>
-    @endif
-</article>
+        {{-- Indicador visual de "abrir" (decorativo: el click lo maneja la card entera) --}}
+        @if($project->url)
+            <span class="ml-auto shrink-0 text-slate-700 group-hover:text-cyan-400 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"></path>
+                </svg>
+            </span>
+        @endif
+    </div>
+</{{ $tag }}>
