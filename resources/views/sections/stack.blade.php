@@ -123,8 +123,9 @@
                 </div>
             @endif
 
+            @php $desdeTxt = ($th && $th['desde']) ? ' · en vivo desde '.$th['desde'] : ''; @endphp
             <p class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8 leading-relaxed">
-                // todos rechazados · ningún acceso comprometido@if ($th && $th['desde']) · en vivo desde {{ $th['desde'] }}@endif<br>
+                // todos rechazados · ningún acceso comprometido{{ $desdeTxt }}<br>
                 // defensa: NPM + block-common-exploits · middleware Laravel · secretos fuera del repo · hardening OS
             </p>
         </div>
