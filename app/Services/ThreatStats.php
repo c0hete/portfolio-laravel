@@ -71,4 +71,43 @@ class ThreatStats
             }
         });
     }
+
+    /**
+     * Sondeos a la INFRAESTRUCTURA (medidos desde los logs de NPM por el cron del
+     * hub, persistidos en `infra_stats`). Distinto de stats(): aquello cuenta los
+     * ataques a ESTE dominio Laravel; esto cuenta los de toda la IP del hub.
+     *
+     * Lee de la DB; si la tabla está vacía o falla, cae al snapshot de config
+     * (`services.security_stats`) para no perder el dato histórico. Devuelve:
+     *   ['sondeos_total' => N, 'intentos_secretos' => M, 'snapshot' => 'D MMM YYYY']
+     */
+    public function infra(): array
+    {
+        $fallback = [
+            'sondeos_total' => (int) (config('services.security_stats.sondeos_total') ?? 0),
+            'intentos_secretos' => (int) (config('services.security_stats.intentos_secretos') ?? 0),
+            'snapshot' => config('services.security_stats.snapshot') ?? '—',
+        ];
+
+        return Cache::remember('threat.infra', now()->addMinutes(5), function () use ($fallback) {
+            try {
+                $rows = DB::table('infra_stats')->pluck('value', 'key');
+                if ($rows->isEmpty() || ! $rows->has('sondeos_total')) {
+                    return $fallback;
+                }
+
+                $measured = DB::table('infra_stats')->max('measured_at');
+
+                return [
+                    'sondeos_total' => (int) $rows->get('sondeos_total', 0),
+                    'intentos_secretos' => (int) $rows->get('intentos_secretos', 0),
+                    'snapshot' => $measured ? Carbon::parse($measured)->locale('es')->isoFormat('D MMM YYYY') : $fallback['snapshot'],
+                ];
+            } catch (\Throwable $e) {
+                Log::warning('ThreatStats::infra: '.$e->getMessage());
+
+                return $fallback;
+            }
+        });
+    }
 }

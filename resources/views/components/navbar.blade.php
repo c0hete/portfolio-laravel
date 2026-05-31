@@ -20,7 +20,8 @@
         <div class="hidden md:flex space-x-7 text-[11px] font-medium items-center tracking-widest uppercase">
             <a href="/sobre-mi" class="text-slate-400 hover:text-cyan-400 transition-all {{ request()->is('sobre-mi*') ? 'text-cyan-400' : '' }}">Sobre mí</a>
             <a href="/proyectos" class="text-slate-400 hover:text-cyan-400 transition-all {{ request()->is('proyectos*') ? 'text-cyan-400' : '' }}">Proyectos</a>
-            <a href="/stack" class="text-slate-400 hover:text-cyan-400 transition-all {{ request()->is('stack*') ? 'text-cyan-400' : '' }}">Infraestructura</a>
+            <a href="/#seguridad" class="text-slate-400 hover:text-cyan-400 transition-all">Seguridad</a>
+            <a href="/stack" class="text-slate-400 hover:text-cyan-400 transition-all {{ request()->is('stack*') ? 'text-cyan-400' : '' }}">Stack</a>
 
             {{-- Links externos (íconos) --}}
             <span class="h-4 w-px bg-white/10"></span>
@@ -81,6 +82,13 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
         <span class="text-[9px] font-mono uppercase tracking-widest">Projects</span>
+    </a>
+
+    <a href="/#seguridad" class="flex flex-col items-center gap-1 text-slate-500">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+        </svg>
+        <span class="text-[9px] font-mono uppercase tracking-widest">Seguridad</span>
     </a>
 
     <a href="/stack" class="flex flex-col items-center gap-1 {{ request()->is('stack*') ? 'text-cyan-400' : 'text-slate-500' }}">
