@@ -57,7 +57,9 @@ Route::middleware('throttle:5,1')->group(function () {
 // Anti-scraping: un crawler que intente bajarlo masivamente recibe 429. El PDF
 // vive fuera de public en storage/app/private, así no es accesible por URL directa.
 Route::get('/cv', function () {
-    $path = storage_path('app/private/cv.pdf');
+    // En resources/ (parte del código, no en storage/ que es de www-data) para
+    // que el `git reset` del deploy —que corre como master— pueda escribirlo.
+    $path = resource_path('cv/cv.pdf');
     abort_unless(is_file($path), 404);
 
     return response()->file($path, [
