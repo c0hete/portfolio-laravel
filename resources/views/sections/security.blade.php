@@ -33,6 +33,12 @@
                     <div class="flex items-center gap-3 mb-8">
                         <svg class="w-5 h-5 text-red-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                         <h2 class="text-slate-100 font-semibold text-sm uppercase tracking-widest">Sondeos rechazados</h2>
+                        {{-- Botón actualizar (el contador en vivo lee la DB propia) --}}
+                        <button type="button" data-refresh="ataques" title="Actualizar ahora"
+                                class="ml-auto flex items-center gap-1.5 font-mono text-[9px] text-slate-500 hover:text-red-400/80 uppercase tracking-widest transition-colors">
+                            <svg data-refresh-icon class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                            ↻
+                        </button>
                     </div>
 
                     {{-- Métricas: 1 col en móvil, 3 en sm; dentro de la columna queda compacto --}}
@@ -40,13 +46,14 @@
                         @if ($th && $th['total'] > 0)
                             <div>
                                 <div class="flex items-baseline gap-2">
-                                    <p class="font-mono text-3xl md:text-4xl font-bold text-red-400/90 tracking-tight">{{ number_format($th['total']) }}</p>
+                                    <p data-ataques-total class="font-mono text-3xl md:text-4xl font-bold text-red-400/90 tracking-tight">{{ number_format($th['total']) }}</p>
                                     <span class="relative flex h-2 w-2 mb-1">
                                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                         <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                                     </span>
                                 </div>
                                 <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">ataques rechazados <span class="text-red-400/60">· en vivo</span></p>
+                                <p data-ataques-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1">// actualiza cada {{ \App\Services\ThreatStats::REFRESH_SECONDS }}s</p>
                             </div>
                         @endif
 
@@ -96,6 +103,11 @@
                     </span>
                     <h2 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Telemetría del nodo</h2>
                     <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// visitas · 90 días</span>
+                    <button type="button" data-refresh="paises" title="Actualizar ahora"
+                            class="ml-auto flex items-center gap-1.5 font-mono text-[9px] text-slate-500 hover:text-cyan-400 uppercase tracking-widest transition-colors">
+                        <svg data-refresh-icon class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                        ↻
+                    </button>
                 </div>
 
                 <div class="grid gap-y-3">
@@ -123,7 +135,8 @@
                     @endforeach
                 </div>
 
-                <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-8">
+                <p data-paises-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// actualiza cada {{ \App\Services\UmamiStats::REFRESH_MINUTES }} min</p>
+                <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-1">
                     // datos propios · Umami self-hosted · sin cookies
                 </p>
             </div>

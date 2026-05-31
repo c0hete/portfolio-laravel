@@ -162,15 +162,23 @@ jobs:
             git reset --hard origin/develop
             echo "==> rebuild + up (staging)"
             docker compose -f docker-compose.staging.yml up -d --build
+            echo "==> esperar a que el container responda (evita cachear durante el reinicio)"
+            for i in $(seq 1 30); do
+              docker compose -f docker-compose.staging.yml exec -T app php artisan --version >/dev/null 2>&1 && break
+              echo "   ...container no listo aún ($i/30)"; sleep 2
+            done
             echo "==> migrate (staging)"
             docker compose -f docker-compose.staging.yml exec -T app php artisan migrate --force
             echo "==> seed de proyectos demo (staging es desechable, seed idempotente)"
             docker compose -f docker-compose.staging.yml exec -T app php artisan db:seed --class=ProjectSeeder --force || true
-            echo "==> caches (config + route + view)"
+            # CLEAR antes de CACHE: descarta route/view/config viejos del volumen
+            # ANTES de regenerar. Sin esto, una ruta o vista nueva puede quedar
+            # invisible (404/500) si el cache se generó con estado stale.
+            echo "==> limpiar caches viejos"
+            docker compose -f docker-compose.staging.yml exec -T app php artisan optimize:clear
+            echo "==> regenerar caches (config + route + view)"
             docker compose -f docker-compose.staging.yml exec -T app php artisan config:cache
             docker compose -f docker-compose.staging.yml exec -T app php artisan route:cache
-            # view:cache precompila las vistas Blade: reemplaza las compiladas viejas
-            # y hace fallar el deploy ante un error de Blade (en vez de un 500 en runtime).
             docker compose -f docker-compose.staging.yml exec -T app php artisan view:cache
             echo "==> deploy staging OK"
 
@@ -202,13 +210,21 @@ jobs:
             git reset --hard origin/main
             echo "==> rebuild + up (el container corre el código COPY'd, no el del host)"
             docker compose -f docker-compose.prod.yml up -d --build
+            echo "==> esperar a que el container responda (evita cachear durante el reinicio)"
+            for i in $(seq 1 30); do
+              docker compose -f docker-compose.prod.yml exec -T app php artisan --version >/dev/null 2>&1 && break
+              echo "   ...container no listo aún ($i/30)"; sleep 2
+            done
             echo "==> migrate (NUNCA migrate:fresh — hay proyectos reales)"
             docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
-            echo "==> caches de producción (config + route + view)"
+            # CLEAR antes de CACHE: descarta route/view/config viejos del volumen
+            # ANTES de regenerar. Evita el gotcha de rutas/vistas nuevas que quedan
+            # invisibles (404/500) por cache generado con estado stale en la ventana
+            # de reinicio del 'up --build'. optimize:clear limpia config+route+view+cache.
+            echo "==> limpiar caches viejos"
+            docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
+            echo "==> regenerar caches de producción (config + route + view)"
             docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
             docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
-            # view:cache precompila TODAS las vistas Blade: reemplaza las compiladas
-            # viejas (cacheadas en storage/framework/views) y hace fallar el deploy si
-            # hay un error de sintaxis Blade, en vez de servir un 500 en runtime.
             docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
             echo "==> deploy OK"

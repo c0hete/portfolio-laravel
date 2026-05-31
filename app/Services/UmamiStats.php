@@ -21,7 +21,10 @@ class UmamiStats
      * La vista renderiza el código como "chip" (los emoji de bandera no rinden
      * de forma consistente en Windows/varios navegadores).
      */
-    public function countries(int $days = 90): array
+    /** Cadencia de refresco de los países (minutos). Mostrada en la vista. */
+    public const REFRESH_MINUTES = 10;
+
+    public function countries(int $days = 90, bool $fresh = false): array
     {
         // Sin config → no rompe, devuelve vacío (la vista lo maneja).
         $base = config('services.umami.api_url');
@@ -33,7 +36,11 @@ class UmamiStats
             return [];
         }
 
-        return Cache::remember('umami.countries', now()->addMinutes(30), function () use ($base, $user, $pass, $websiteId, $days) {
+        if ($fresh) {
+            Cache::forget('umami.countries');
+        }
+
+        return Cache::remember('umami.countries', now()->addMinutes(self::REFRESH_MINUTES), function () use ($base, $user, $pass, $websiteId, $days) {
             try {
                 $token = $this->token($base, $user, $pass);
                 if (! $token) {

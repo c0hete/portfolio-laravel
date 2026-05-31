@@ -102,23 +102,41 @@
         @endforeach
     </div>
 
-    {{-- ════ Métricas de impacto verificables ════ --}}
+    {{-- ════ Logros: problema → decisión → resultado (no números huérfanos) ════ --}}
     <div class="mt-20 pt-10 border-t border-white/5">
-        <div class="flex items-center gap-3 mb-8">
+        <div class="flex items-center gap-3 mb-10">
             <span class="font-mono text-cyan-500/50 text-xs">//</span>
-            <h2 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Impacto verificable</h2>
+            <h2 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Trabajo de ingeniería</h2>
+            <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// decisiones, no tareas</span>
         </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="grid md:grid-cols-2 gap-x-12 gap-y-10">
             @foreach ([
-                ['8', 'VPS Linux en producción', '3 regiones · ~40 vCPU · ~106 GB RAM'],
-                ['0', 'hallazgos OpenVAS', 'Crit/High/Med/Low · host principal'],
-                ['5 min', 'RTO de failover', 'Replicación MySQL EE.UU.↔Europa'],
-                ['60+', 'días de uptime', 'Continuo · sin incidentes'],
-            ] as [$n, $label, $sub])
-                <div>
-                    <p class="font-mono text-3xl md:text-4xl font-bold text-cyan-300 tracking-tight">{{ $n }}</p>
-                    <p class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mt-2 leading-snug">{{ $label }}</p>
-                    <p class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1 leading-snug">{{ $sub }}</p>
+                [
+                    'Continuidad ante caída de región',
+                    'Diseñé replicación MySQL geográfica (EE.UU.↔Europa) con failover automático vía Cloudflare API + GitHub Actions. Si una región cae, el servicio recupera en ~5 min sin intervención manual.',
+                    'DR real · RTO 5 min',
+                ],
+                [
+                    'Host endurecido hasta superar auditoría',
+                    'Llevé el host principal a 0 hallazgos en escaneo OpenVAS Full & Fast — remediando lo encontrado, con overrides justificados y documentados, no suprimidos. Hardening: HSTS/CSP, fail2ban, UFW, SSH ed25519.',
+                    '0 hallazgos Crit/High/Med/Low',
+                ],
+                [
+                    'CVEs remediados sin romper producción',
+                    'Resolví 3 CVEs de Symfony vía composer update manteniendo la suite de tests en verde — actualización real, no exclusión del aviso. SCA (composer/pnpm audit) + gitleaks corren como gate en cada build.',
+                    'SDLC con seguridad integrada',
+                ],
+                [
+                    'Responsable único de infra en producción',
+                    'Opero el ciclo completo de 8 VPS en 3 regiones (~40 vCPU): Mailcow (178 buzones), 2× Moodle, BigBlueButton (migré 275 grabaciones / 112 GB de 2.3→3.0), DNS propio y malla WireGuard. 60+ días de uptime continuo.',
+                    'Diseño · deploy · seguridad · operación',
+                ],
+            ] as [$titulo, $desc, $tag])
+                <div class="relative pl-6 border-l border-cyan-500/20">
+                    <span class="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-cyan-500 ring-4 ring-cyan-500/10"></span>
+                    <h3 class="text-slate-100 font-semibold text-[15px] mb-2 leading-snug">{{ $titulo }}</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed font-light mb-3">{{ $desc }}</p>
+                    <span class="inline-block font-mono text-[9px] text-cyan-400/70 uppercase tracking-widest px-2.5 py-1 rounded bg-cyan-500/5 border border-cyan-500/15">{{ $tag }}</span>
                 </div>
             @endforeach
         </div>
