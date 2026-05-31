@@ -67,55 +67,8 @@
         </div>
     </div>
 
-    {{-- El bloque de Seguridad Perimetral vive ahora en la HOME (#seguridad), con
-         protagonismo y acceso directo desde la navbar. Acá NO se duplica. --}}
-
-    {{-- Telemetría en vivo: países desde donde visitan este nodo (Umami self-hosted).
-         Solo se muestra si hay datos (en local/sin tráfico no aparece).
-         Separada del stack técnico por un margen amplio para que no compitan. --}}
-    @if (! empty($countries))
-        @php $maxCount = max(array_column($countries, 'count')) ?: 1; @endphp
-        <div class="mt-32 pt-16 border-t border-white/5">
-            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mb-8">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                </span>
-                <h3 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Telemetría del nodo</h3>
-                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest">// visitas por país · últimos 90 días</span>
-            </div>
-
-            <div class="grid sm:grid-cols-2 gap-x-12 gap-y-3 max-w-3xl">
-                @foreach (array_slice($countries, 0, 10) as $c)
-                    @php
-                        $cc = strtolower($c['code']);
-                        // Bandera SVG servida desde el propio sitio (self → no toca CSP).
-                        // Si el país no tiene SVG descargado, cae al chip con el código ISO.
-                        $flagFile = public_path("assets/flags/{$cc}.svg");
-                        $hasFlag = is_file($flagFile);
-                    @endphp
-                    <div class="flex items-center gap-4">
-                        @if ($hasFlag)
-                            <img src="{{ asset("assets/flags/{$cc}.svg") }}" alt="{{ $c['code'] }}"
-                                 width="24" height="18" loading="lazy"
-                                 class="w-6 h-[18px] shrink-0 rounded-[2px] ring-1 ring-white/10 object-cover">
-                        @else
-                            <span class="font-mono text-[11px] font-semibold text-cyan-300/90 shrink-0 w-9 text-center px-1.5 py-1 bg-cyan-500/5 border border-cyan-500/20 rounded">{{ $c['code'] }}</span>
-                        @endif
-                        <span class="font-mono text-[10px] text-slate-500 w-6 shrink-0">{{ $c['code'] }}</span>
-                        <div class="flex-1 h-1.5 bg-slate-800/60 rounded-full overflow-hidden">
-                            <div class="h-full bg-cyan-500/60 rounded-full" style="width: {{ max(4, round($c['count'] / $maxCount * 100)) }}%"></div>
-                        </div>
-                        <span class="font-mono text-[11px] text-cyan-400/70 w-8 text-right shrink-0">{{ $c['count'] }}</span>
-                    </div>
-                @endforeach
-            </div>
-
-            <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-6">
-                // datos propios · Umami self-hosted en infraestructura del nodo · sin cookies
-            </p>
-        </div>
-    @endif
+    {{-- Seguridad Perimetral + Telemetría del nodo viven ahora en su propia
+         página /seguridad. Acá /stack queda enfocado solo en el stack técnico. --}}
 
 </section>
 @endsection

@@ -12,12 +12,9 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Home: Core Identity (incluye el bloque de Seguridad Perimetral con datos en vivo + infra)
-Route::get('/', function (ThreatStats $threats) {
-    return view('sections.home', [
-        'threats' => $threats->stats(),
-        'infra' => $threats->infra(),
-    ]);
+// Home: Core Identity (hero limpio; la seguridad vive en su propia página /seguridad)
+Route::get('/', function () {
+    return view('sections.home');
 })->name('home');
 
 // Sobre mí: perfil profesional, experiencia, educación y certificaciones
@@ -25,9 +22,18 @@ Route::get('/sobre-mi', function () {
     return view('sections.about');
 })->name('about');
 
-// Stack: Infrastructure & Ecosystem (solo telemetría de países; seguridad vive en home)
-Route::get('/stack', function (UmamiStats $umami) {
-    return view('sections.stack', ['countries' => $umami->countries()]);
+// Seguridad Perimetral: telemetría de defensa en vivo + histórico + procedencia del tráfico
+Route::get('/seguridad', function (ThreatStats $threats, UmamiStats $umami) {
+    return view('sections.security', [
+        'threats' => $threats->stats(),
+        'infra' => $threats->infra(),
+        'countries' => $umami->countries(),
+    ]);
+})->name('security');
+
+// Stack: Infrastructure & Ecosystem (solo el stack técnico; telemetría vive en /seguridad)
+Route::get('/stack', function () {
+    return view('sections.stack');
 })->name('stack');
 
 // Proyectos: Mission Critical Systems
@@ -64,6 +70,7 @@ Route::get('/sitemap.xml', function () {
         ['loc' => url('/'), 'priority' => '1.0', 'changefreq' => 'monthly'],
         ['loc' => url('/sobre-mi'), 'priority' => '0.9', 'changefreq' => 'monthly'],
         ['loc' => url('/proyectos'), 'priority' => '0.8', 'changefreq' => 'monthly'],
+        ['loc' => url('/seguridad'), 'priority' => '0.8', 'changefreq' => 'weekly'],
         ['loc' => url('/stack'), 'priority' => '0.7', 'changefreq' => 'yearly'],
         ['loc' => url('/contacto'), 'priority' => '0.6', 'changefreq' => 'yearly'],
     ];

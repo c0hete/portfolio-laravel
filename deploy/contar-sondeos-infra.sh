@@ -13,7 +13,7 @@
 set -euo pipefail
 
 PROXY_CONTAINER="proxy-app-1"
-APP_CONTAINER="portfolio_app"
+APP_SERVICE="app"   # nombre del SERVICIO en el compose (no el del container)
 COMPOSE_FILE="docker-compose.prod.yml"
 APP_DIR="/home/master/sites/portafolio"
 
@@ -37,7 +37,7 @@ fi
 
 # 3) CARGAR: persistir en la DB del portafolio vía el comando artisan.
 cd "$APP_DIR"
-docker compose -f "$COMPOSE_FILE" exec -T "$APP_CONTAINER" \
+docker compose -f "$COMPOSE_FILE" exec -T "$APP_SERVICE" \
   php artisan infra:contar-sondeos --total="$TOTAL" --secretos="$SECRETOS"
 
 echo "[$(date -Is)] OK: total=$TOTAL secretos=$SECRETOS"
