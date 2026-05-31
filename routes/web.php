@@ -34,13 +34,18 @@ Route::get('/seguridad', function (ThreatStats $threats, UmamiStats $umami) {
 // Endpoints JSON para el botón "↻ actualizar" de los widgets de /seguridad.
 // Devuelven el dato FRESCO (saltan el cache). Sin credenciales: el contador en
 // vivo sale de la DB propia; los países, de la API de Umami leída server-side.
-Route::get('/api/telemetria/ataques', function (ThreatStats $threats) {
-    return response()->json($threats->stats(fresh: true));
-})->name('api.ataques');
+//
+// throttle:5,1 = máx 5 req/min por IP → 429 si se supera. Protege contra spam
+// que martillaría la API de Umami (cada hit con fresh hace login+query) o la DB.
+Route::middleware('throttle:5,1')->group(function () {
+    Route::get('/api/telemetria/ataques', function (ThreatStats $threats) {
+        return response()->json($threats->stats(fresh: true));
+    })->name('api.ataques');
 
-Route::get('/api/telemetria/paises', function (UmamiStats $umami) {
-    return response()->json(['countries' => $umami->countries(fresh: true)]);
-})->name('api.paises');
+    Route::get('/api/telemetria/paises', function (UmamiStats $umami) {
+        return response()->json(['countries' => $umami->countries(fresh: true)]);
+    })->name('api.paises');
+});
 
 // Stack: Infrastructure & Ecosystem (solo el stack técnico; telemetría vive en /seguridad)
 Route::get('/stack', function () {
