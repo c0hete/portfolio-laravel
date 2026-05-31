@@ -46,23 +46,25 @@ geo_country() {
   fi
 }
 
-# Baneos del jail sshd (sqlite de fail2ban). Columna ip + timeofban.
-ROWS=$(sqlite3 "$F2B_DB" "SELECT ip, datetime(MAX(timeofban),'unixepoch') FROM bips WHERE jail='sshd' GROUP BY ip;" 2>/dev/null || true)
+# Baneos del jail sshd (sqlite de fail2ban). Por IP: count REAL de baneos +
+# fecha del último. El COUNT(*) es cuántas veces fail2ban baneó esa IP (dato
+# verdadero), NO cuántas veces corrió este cron.
+ROWS=$(sqlite3 "$F2B_DB" "SELECT ip, COUNT(*), datetime(MAX(timeofban),'unixepoch') FROM bips WHERE jail='sshd' GROUP BY ip;" 2>/dev/null || true)
 
 [ -n "$ROWS" ] || { echo "[$(date -Is)] sin baneos que registrar"; exit 0; }
 
 # Construir array JSON.
 JSON="["
 first=1
-while IFS='|' read -r ip banned_at; do
+while IFS='|' read -r ip bans banned_at; do
   [ -z "$ip" ] && continue
   masked=$(mask_ip "$ip")
   country=$(geo_country "$ip")
   hash=$(printf '%s%s' "$HASH_SALT" "$ip" | sha256sum | cut -d' ' -f1)
   [ $first -eq 0 ] && JSON+=","
   first=0
-  JSON+=$(printf '{"ip_masked":"%s","ip_hash":"%s","country":"%s","jail":"sshd","banned_at":"%s"}' \
-    "$masked" "$hash" "$country" "$banned_at")
+  JSON+=$(printf '{"ip_masked":"%s","ip_hash":"%s","country":"%s","jail":"sshd","bans":%s,"banned_at":"%s"}' \
+    "$masked" "$hash" "$country" "${bans:-1}" "$banned_at")
 done <<< "$ROWS"
 JSON+="]"
 
