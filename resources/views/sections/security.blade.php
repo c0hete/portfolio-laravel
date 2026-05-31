@@ -143,5 +143,67 @@
         @endif
 
     </div>
+
+    {{-- ════ IPs baneadas por fail2ban (historial geolocalizado) ════
+         Alimentado por el cron registrar-baneos.sh → tabla banned_ips.
+         IP enmascarada (no se guarda completa). Solo aparece si hay datos. --}}
+    @if (! empty($banned) && $banned['total'] > 0)
+        <div class="mt-8 p-8 border border-white/5 rounded-lg">
+            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mb-8">
+                <svg class="w-5 h-5 text-red-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+                <h2 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">IPs bloqueadas</h2>
+                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// fail2ban · jail sshd</span>
+                <button type="button" data-refresh="baneos" title="Actualizar ahora"
+                        class="ml-auto flex items-center gap-1.5 font-mono text-[9px] text-slate-500 hover:text-red-400/80 uppercase tracking-widest transition-colors">
+                    <svg data-refresh-icon class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+                    ↻
+                </button>
+            </div>
+
+            {{-- Resumen --}}
+            <div class="flex flex-wrap gap-x-12 gap-y-4 mb-8">
+                <div>
+                    <p data-baneos-total class="font-mono text-3xl md:text-4xl font-bold text-red-400/90 tracking-tight">{{ number_format($banned['total']) }}</p>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">IPs bloqueadas</p>
+                </div>
+                @if ($banned['paises'] > 0)
+                    <div>
+                        <p class="font-mono text-3xl md:text-4xl font-bold text-slate-100 tracking-tight">{{ number_format($banned['paises']) }}</p>
+                        <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">países de origen</p>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Lista de IPs recientes con bandera --}}
+            <div class="grid sm:grid-cols-2 gap-x-12 gap-y-2.5">
+                @foreach ($banned['recientes'] as $b)
+                    @php
+                        $cc = strtolower($b['country'] ?? '');
+                        $hasFlag = $cc && is_file(public_path("assets/flags/{$cc}.svg"));
+                    @endphp
+                    <div class="flex items-center gap-3 font-mono text-[11px]">
+                        @if ($hasFlag)
+                            <img src="{{ asset("assets/flags/{$cc}.svg") }}" alt="{{ strtoupper($cc) }}"
+                                 width="20" height="15" loading="lazy"
+                                 class="w-5 h-[15px] shrink-0 rounded-[2px] ring-1 ring-white/10 object-cover">
+                        @else
+                            <span class="w-5 h-[15px] shrink-0 rounded-[2px] bg-slate-800 flex items-center justify-center text-[7px] text-slate-500">{{ strtoupper($cc) ?: '??' }}</span>
+                        @endif
+                        <span class="text-slate-300 flex-1">{{ $b['ip'] }}</span>
+                        @if ($b['hits'] > 1)
+                            <span class="text-slate-600">×{{ $b['hits'] }}</span>
+                        @endif
+                        <span class="text-red-400/50 uppercase tracking-widest text-[9px]">bloqueada</span>
+                    </div>
+                @endforeach
+            </div>
+
+            <p data-baneos-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// actualiza cada {{ \App\Services\BannedIps::REFRESH_MINUTES }} min</p>
+            <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-1">
+                // fuerza bruta SSH detectada y bloqueada · IP enmascarada · geolocalización self-hosted
+            </p>
+        </div>
+    @endif
+
 </section>
 @endsection

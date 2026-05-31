@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Models\Project;
+use App\Services\BannedIps;
 use App\Services\ThreatStats;
 use App\Services\UmamiStats;
 use Illuminate\Support\Facades\Route;
@@ -23,11 +24,12 @@ Route::get('/sobre-mi', function () {
 })->name('about');
 
 // Seguridad Perimetral: telemetría de defensa en vivo + histórico + procedencia del tráfico
-Route::get('/seguridad', function (ThreatStats $threats, UmamiStats $umami) {
+Route::get('/seguridad', function (ThreatStats $threats, UmamiStats $umami, BannedIps $banned) {
     return view('sections.security', [
         'threats' => $threats->stats(),
         'infra' => $threats->infra(),
         'countries' => $umami->countries(),
+        'banned' => $banned->stats(),
     ]);
 })->name('security');
 
@@ -45,6 +47,10 @@ Route::middleware('throttle:5,1')->group(function () {
     Route::get('/api/telemetria/paises', function (UmamiStats $umami) {
         return response()->json(['countries' => $umami->countries(fresh: true)]);
     })->name('api.paises');
+
+    Route::get('/api/telemetria/baneos', function (BannedIps $banned) {
+        return response()->json($banned->stats(fresh: true));
+    })->name('api.baneos');
 });
 
 // Stack: Infrastructure & Ecosystem (solo el stack técnico; telemetría vive en /seguridad)

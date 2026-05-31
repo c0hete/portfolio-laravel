@@ -18,14 +18,16 @@
     
     {{-- Título --}}
     <h1 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mb-10 max-w-5xl leading-[1.05]">
-        Full Stack Developer <br/> 
-        <span class="text-slate-500">& Infrastructure Engineer.</span>
+        Full Stack Developer <br/>
+        <span class="text-slate-500">& DevSecOps Engineer.</span>
     </h1>
-    
+
     {{-- Descripción --}}
 <p class="max-w-3xl text-lg md:text-xl text-slate-400 mb-20 leading-relaxed font-light">
-    Especialista en el ecosistema <span class="text-slate-200 font-normal">PHP/Laravel</span> orientado a la construcción de sistemas de alta disponibilidad. 
-    Combino la ingeniería de software de precisión con la fortificación de infraestructuras críticas, garantizando despliegues resilientes y operaciones continuas.
+    Desarrollador <span class="text-slate-200 font-normal">PHP/Laravel</span> con
+    <span class="text-slate-200 font-normal">3+ años</span> construyendo sistemas en producción,
+    con enfoque <span class="text-slate-200 font-normal">DevSecOps</span>: integro seguridad en todo
+    el ciclo —del código al despliegue— con CI/CD endurecido, hardening y gestión de vulnerabilidades.
 </p>
 
     {{-- Metadata & Call to Action --}}

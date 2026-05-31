@@ -62,6 +62,26 @@ async function refreshPaises(btn) {
     }
 }
 
+// Refresca el resumen de IPs baneadas.
+async function refreshBaneos(btn) {
+    setLoading(btn, true);
+    try {
+        const res = await fetch('/api/telemetria/baneos', { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+
+        const totalEl = document.querySelector('[data-baneos-total]');
+        if (totalEl) totalEl.textContent = formatNumber(data.total);
+
+        const stampEl = document.querySelector('[data-baneos-stamp]');
+        if (stampEl) stampEl.textContent = '// actualizado recién';
+    } catch (e) {
+        // Silencioso.
+    } finally {
+        setLoading(btn, false);
+    }
+}
+
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-refresh]');
     if (!btn) return;
@@ -69,4 +89,5 @@ document.addEventListener('click', (e) => {
     const kind = btn.getAttribute('data-refresh');
     if (kind === 'ataques') refreshAtaques(btn);
     if (kind === 'paises') refreshPaises(btn);
+    if (kind === 'baneos') refreshBaneos(btn);
 });
