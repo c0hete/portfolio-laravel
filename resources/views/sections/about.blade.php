@@ -15,7 +15,7 @@
             </h1>
         </div>
         <p class="font-mono text-[11px] text-slate-500 uppercase tracking-[0.25em] mb-10">
-            Full Stack Developer & Infrastructure Engineer · Temuco, CL · Remote
+            Full Stack Developer & DevSecOps Engineer · Temuco, CL · Remote
         </p>
         <p class="max-w-3xl text-lg text-slate-300 leading-relaxed font-light">
             Desarrollador Full Stack con <span class="text-slate-100 font-normal">3+ años</span> en el
