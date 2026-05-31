@@ -17,7 +17,9 @@ class UmamiStats
 {
     /**
      * Países desde donde nos visitan, ordenados por cantidad.
-     * Devuelve [['code' => 'CL', 'flag' => '🇨🇱', 'count' => 3], ...] o [] si falla.
+     * Devuelve [['code' => 'CL', 'count' => 3], ...] o [] si falla.
+     * La vista renderiza el código como "chip" (los emoji de bandera no rinden
+     * de forma consistente en Windows/varios navegadores).
      */
     public function countries(int $days = 90): array
     {
@@ -58,7 +60,6 @@ class UmamiStats
                     ->filter(fn ($row) => ! empty($row['x']))
                     ->map(fn ($row) => [
                         'code' => $row['x'],
-                        'flag' => $this->flag($row['x']),
                         'count' => (int) ($row['y'] ?? 0),
                     ])
                     ->sortByDesc('count')
@@ -85,21 +86,5 @@ class UmamiStats
 
             return $resp->successful() ? ($resp->json('token') ?: null) : null;
         });
-    }
-
-    /**
-     * Emoji de bandera a partir del código ISO de 2 letras (CL → 🇨🇱).
-     */
-    private function flag(string $code): string
-    {
-        $code = strtoupper($code);
-        if (strlen($code) !== 2 || ! ctype_alpha($code)) {
-            return '🌐';
-        }
-        // Cada letra → regional indicator symbol (offset 0x1F1E6 desde 'A').
-        $a = mb_ord($code[0]) - 65 + 0x1F1E6;
-        $b = mb_ord($code[1]) - 65 + 0x1F1E6;
-
-        return mb_chr($a).mb_chr($b);
     }
 }

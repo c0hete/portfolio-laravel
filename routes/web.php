@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Models\Project;
+use App\Services\ThreatStats;
 use App\Services\UmamiStats;
 use Illuminate\Support\Facades\Route;
 
@@ -12,8 +13,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Home: Core Identity
-Route::get('/', function () {
-    return view('sections.home');
+Route::get('/', function (ThreatStats $threats) {
+    return view('sections.home', ['threats' => $threats->stats()]);
 })->name('home');
 
 // Sobre mí: perfil profesional, experiencia, educación y certificaciones
@@ -22,8 +23,11 @@ Route::get('/sobre-mi', function () {
 })->name('about');
 
 // Stack: Infrastructure & Ecosystem
-Route::get('/stack', function (UmamiStats $umami) {
-    return view('sections.stack', ['countries' => $umami->countries()]);
+Route::get('/stack', function (UmamiStats $umami, ThreatStats $threats) {
+    return view('sections.stack', [
+        'countries' => $umami->countries(),
+        'threats' => $threats->stats(),
+    ]);
 })->name('stack');
 
 // Proyectos: Mission Critical Systems

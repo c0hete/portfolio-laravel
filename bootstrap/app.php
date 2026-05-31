@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\BlockedProbeLogger;
 use App\Http\Middleware\SecureHeadersMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -18,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // ✅ Mantenemos la seguridad
         $middleware->append(SecureHeadersMiddleware::class);
+
+        // 📡 Telemetría de seguridad: cuenta los sondeos maliciosos (404 a rutas
+        // de ataque tipo .env/.git/wp-admin). Solo actúa sobre respuestas 404.
+        $middleware->append(BlockedProbeLogger::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

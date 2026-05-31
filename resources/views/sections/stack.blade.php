@@ -67,31 +67,65 @@
         </div>
     </div>
 
-    {{-- Seguridad perimetral: sondeos maliciosos rechazados por el reverse-proxy.
-         Datos reales de los logs de NPM (snapshot). Cuenta la historia DevSecOps. --}}
-    @php $sec = config('services.security_stats'); @endphp
-    @if ($sec && ($sec['sondeos_total'] ?? 0) > 0)
+    {{-- Seguridad perimetral — DOS capas honestas que miden cosas distintas:
+         (1) histórico: sondeos a la IP del hub vía NPM (snapshot manual de logs).
+         (2) en vivo: sondeos a ESTE dominio Laravel, contados por el middleware
+             BlockedProbeLogger en tiempo real (ThreatStats). Arranca de 0 y sube. --}}
+    @php $sec = config('services.security_stats'); $th = $threats ?? null; @endphp
+    @if (($sec && ($sec['sondeos_total'] ?? 0) > 0) || ($th && $th['total'] > 0))
         <div class="mt-12 p-8 bg-red-500/[0.02] border border-red-500/15 rounded-lg">
             <div class="flex items-center gap-3 mb-8">
                 <svg class="w-5 h-5 text-red-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                 <h3 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Seguridad perimetral</h3>
-                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// sondeos rechazados por el reverse-proxy</span>
+                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// sondeos maliciosos rechazados</span>
             </div>
 
-            <div class="grid sm:grid-cols-2 gap-8">
-                <div>
-                    <p class="font-mono text-4xl md:text-5xl font-bold text-slate-100 tracking-tight">{{ number_format($sec['sondeos_total']) }}</p>
-                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">sondeos maliciosos bloqueados</p>
-                </div>
-                <div>
-                    <p class="font-mono text-4xl md:text-5xl font-bold text-red-400/80 tracking-tight">{{ number_format($sec['intentos_secretos']) }}</p>
-                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">intentos de robo de secretos (<span class="text-red-400/60">.env</span> · <span class="text-red-400/60">.git</span> · exploits)</p>
-                </div>
+            <div class="grid sm:grid-cols-3 gap-8">
+                {{-- En vivo: detectados en este nodo por el middleware --}}
+                @if ($th && $th['total'] > 0)
+                    <div>
+                        <div class="flex items-baseline gap-2">
+                            <p class="font-mono text-4xl md:text-5xl font-bold text-red-400/80 tracking-tight">{{ number_format($th['total']) }}</p>
+                            <span class="relative flex h-2 w-2 mb-1">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                            </span>
+                        </div>
+                        <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">detectados en este nodo <span class="text-red-400/50">· en vivo</span></p>
+                    </div>
+                @endif
+
+                {{-- Histórico: a la infraestructura del hub vía NPM (snapshot) --}}
+                @if ($sec && ($sec['sondeos_total'] ?? 0) > 0)
+                    <div>
+                        <p class="font-mono text-4xl md:text-5xl font-bold text-slate-100 tracking-tight">{{ number_format($sec['sondeos_total']) }}</p>
+                        <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">a la infraestructura <span class="text-slate-600">· snapshot {{ $sec['snapshot'] }}</span></p>
+                    </div>
+                    <div>
+                        <p class="font-mono text-4xl md:text-5xl font-bold text-red-400/80 tracking-tight">{{ number_format($sec['intentos_secretos']) }}</p>
+                        <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">robo de secretos (<span class="text-red-400/60">.env</span> · <span class="text-red-400/60">.git</span>)</p>
+                    </div>
+                @endif
             </div>
+
+            {{-- Top rutas atacadas en vivo (detalle del contador del middleware) --}}
+            @if ($th && ! empty($th['top']))
+                <div class="mt-8 pt-6 border-t border-red-500/10">
+                    <p class="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">// rutas más sondeadas en este nodo</p>
+                    <div class="flex flex-wrap gap-x-6 gap-y-2">
+                        @foreach ($th['top'] as $probe)
+                            <div class="flex items-center gap-2 font-mono text-[11px]">
+                                <span class="{{ $probe['category'] === 'secret' ? 'text-red-400/70' : 'text-slate-400' }}">{{ $probe['pattern'] }}</span>
+                                <span class="text-slate-600">×{{ number_format($probe['hits']) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             <p class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8 leading-relaxed">
-                // todos rechazados · ningún acceso comprometido · monitoreado desde {{ $sec['desde'] }} · snapshot {{ $sec['snapshot'] }}<br>
-                // defensa: NPM + block-common-exploits · secretos fuera del repo · hardening OS
+                // todos rechazados · ningún acceso comprometido@if ($th && $th['desde']) · en vivo desde {{ $th['desde'] }}@endif<br>
+                // defensa: NPM + block-common-exploits · middleware Laravel · secretos fuera del repo · hardening OS
             </p>
         </div>
     @endif
@@ -113,8 +147,7 @@
             <div class="grid sm:grid-cols-2 gap-x-12 gap-y-3 max-w-3xl">
                 @foreach (array_slice($countries, 0, 10) as $c)
                     <div class="flex items-center gap-4">
-                        <span class="text-lg leading-none shrink-0">{{ $c['flag'] }}</span>
-                        <span class="font-mono text-xs text-slate-400 w-8 shrink-0">{{ $c['code'] }}</span>
+                        <span class="font-mono text-[11px] font-semibold text-cyan-300/90 shrink-0 w-9 text-center px-1.5 py-1 bg-cyan-500/5 border border-cyan-500/20 rounded">{{ $c['code'] }}</span>
                         <div class="flex-1 h-1.5 bg-slate-800/60 rounded-full overflow-hidden">
                             <div class="h-full bg-cyan-500/60 rounded-full" style="width: {{ max(4, round($c['count'] / $maxCount * 100)) }}%"></div>
                         </div>
