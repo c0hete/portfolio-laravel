@@ -11,14 +11,15 @@
                 <div class="flex flex-col">
                     {{-- Aumentamos el nombre a text-lg --}}
                     <p class="text-slate-200 font-bold text-lg tracking-tight">ALVARADO MAZZEI</p>
-                    <p class="text-slate-500 font-mono text-[11px] uppercase tracking-widest">Full Stack & SysOps</p>
+                    <p class="text-slate-500 font-mono text-[11px] uppercase tracking-widest">Full Stack · DevSecOps · SysAdmin</p>
                 </div>
             </div>
             
             {{-- Aumentamos la descripción a text-xs (12px) y mejoramos el color a slate-400 para lectura --}}
             <p class="text-slate-400 text-xs leading-relaxed pt-2">
-                Arquitectura de sistemas escalables y despliegue de infraestructura crítica. 
-                Enfoque en ciberseguridad y optimización de entornos distribuidos.
+                Desarrollo de software en Laravel/PHP, administración de infraestructura Linux
+                y operaciones con seguridad integrada (DevSecOps). Del código al despliegue,
+                en entornos distribuidos de alta disponibilidad.
             </p>
         </div>
         

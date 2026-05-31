@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Proyectos — José Alvarado Mazzei')
-@section('description', 'Proyectos de infraestructura y desarrollo: plataformas LMS (Moodle), videoconferencia (BigBlueButton), control de asistencia biométrico y correo corporativo (Mailcow). Arquitecturas de alta disponibilidad.')
+@section('description', 'Proyectos de desarrollo e infraestructura: SaaS multi-tenant en Laravel, control de asistencia biométrico, plataformas LMS (Moodle), videoconferencia (BigBlueButton) y correo corporativo (Mailcow). Software seguro y arquitecturas de alta disponibilidad.')
 
 @section('content')
 <section class="max-w-6xl mx-auto px-6 py-12">
@@ -9,11 +9,11 @@
     {{-- Header de Sección: Enfoque Profesional --}}
     <header class="mb-20 border-l-2 border-cyan-500/30 pl-8">
         <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-            Infraestructura & <span class="text-cyan-400">Proyectos Activos</span>
+            Sistemas & <span class="text-cyan-400">Proyectos Activos</span>
         </h2>
         <p class="text-slate-500 max-w-2xl leading-relaxed font-light text-sm md:text-base">
-            Arquitecturas diseñadas para la alta disponibilidad, escalabilidad y seguridad de datos. 
-            Cada despliegue representa una solución integral a desafíos de infraestructura crítica.
+            Del desarrollo de software al despliegue seguro en producción. Cada proyecto integra
+            ingeniería de aplicaciones, infraestructura de alta disponibilidad y seguridad de datos.
         </p>
     </header>
 
