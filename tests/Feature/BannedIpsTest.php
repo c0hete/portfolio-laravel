@@ -25,15 +25,18 @@ class BannedIpsTest extends TestCase
         $this->assertSame('BG', DB::table('banned_ips')->where('ip_hash', 'hash-bg-1')->value('country'));
     }
 
-    public function test_baneo_reincidente_suma_hits_no_duplica(): void
+    public function test_baneo_reincidente_setea_hits_real_no_duplica_ni_infla(): void
     {
-        $row = fn ($at) => json_encode([['ip_masked' => '78.83.x.x', 'ip_hash' => 'hash-bg-1', 'country' => 'BG', 'banned_at' => $at]]);
+        // 'bans' = count real de fail2ban. El cron es idempotente: setea, no suma.
+        // Dos corridas con el mismo count NO inflan el número (era el bug del x5).
+        $row = fn ($bans, $at) => json_encode([['ip_masked' => '78.83.x.x', 'ip_hash' => 'hash-bg-1', 'country' => 'BG', 'bans' => $bans, 'banned_at' => $at]]);
 
-        $this->artisan('infra:registrar-baneos', ['--json' => $row('2026-05-31 18:00:00')])->assertSuccessful();
-        $this->artisan('infra:registrar-baneos', ['--json' => $row('2026-05-31 19:00:00')])->assertSuccessful();
+        $this->artisan('infra:registrar-baneos', ['--json' => $row(3, '2026-05-31 18:00:00')])->assertSuccessful();
+        $this->artisan('infra:registrar-baneos', ['--json' => $row(3, '2026-05-31 19:00:00')])->assertSuccessful();
 
         $this->assertSame(1, DB::table('banned_ips')->count());
-        $this->assertSame(2, (int) DB::table('banned_ips')->where('ip_hash', 'hash-bg-1')->value('hits'));
+        // Sigue en 3 (el count real), no en 6 ni 2: no se infla por corrida.
+        $this->assertSame(3, (int) DB::table('banned_ips')->where('ip_hash', 'hash-bg-1')->value('hits'));
     }
 
     public function test_no_se_guarda_la_ip_completa(): void
@@ -68,5 +71,22 @@ class BannedIpsTest extends TestCase
         $stats = (new BannedIps)->stats();
         $this->assertSame(0, $stats['total']);
         $this->assertSame([], $stats['recientes']);
+    }
+
+    public function test_purga_baneos_de_mas_de_90_dias(): void
+    {
+        // Un baneo viejo (>90d) ya en la tabla.
+        DB::table('banned_ips')->insert([
+            'ip_masked' => '1.2.x.x', 'ip_hash' => 'viejo', 'country' => 'XX', 'jail' => 'sshd',
+            'hits' => 1, 'banned_at' => now()->subDays(120),
+            'created_at' => now()->subDays(120), 'updated_at' => now()->subDays(120),
+        ]);
+
+        // Una corrida nueva con otra IP → debe purgar el viejo.
+        $json = json_encode([['ip_masked' => '9.9.x.x', 'ip_hash' => 'nuevo', 'country' => 'BG', 'bans' => 1]]);
+        $this->artisan('infra:registrar-baneos', ['--json' => $json])->assertSuccessful();
+
+        $this->assertNull(DB::table('banned_ips')->where('ip_hash', 'viejo')->first());
+        $this->assertNotNull(DB::table('banned_ips')->where('ip_hash', 'nuevo')->first());
     }
 }

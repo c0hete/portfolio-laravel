@@ -46,31 +46,33 @@ class RegistrarBaneos extends Command
                 continue;
             }
 
-            // Upsert por ip_hash: si reincide, suma hits y actualiza banned_at.
-            $existing = DB::table('banned_ips')->where('ip_hash', $r['ip_hash'])->first();
-            if ($existing) {
-                DB::table('banned_ips')->where('id', $existing->id)->update([
-                    'hits' => $existing->hits + 1,
-                    'banned_at' => $r['banned_at'] ?? $now,
-                    'country' => $r['country'] ?? $existing->country,
-                    'updated_at' => $now,
-                ]);
-            } else {
-                DB::table('banned_ips')->insert([
+            // 'bans' = count REAL de baneos de fail2ban para esa IP. Se SETEA
+            // (no se incrementa): el cron es idempotente, refleja el estado de
+            // fail2ban en cada corrida sin inflar el número con cada pasada.
+            $bans = max(1, (int) ($r['bans'] ?? 1));
+
+            DB::table('banned_ips')->updateOrInsert(
+                ['ip_hash' => $r['ip_hash']],
+                [
                     'ip_masked' => $r['ip_masked'],
-                    'ip_hash' => $r['ip_hash'],
                     'country' => $r['country'] ?? null,
                     'jail' => $r['jail'] ?? 'sshd',
-                    'hits' => 1,
+                    'hits' => $bans,
                     'banned_at' => $r['banned_at'] ?? $now,
-                    'created_at' => $now,
                     'updated_at' => $now,
-                ]);
-            }
+                    'created_at' => $now,
+                ]
+            );
             $n++;
         }
 
-        $this->info("banned_ips: {$n} registro(s) procesado(s).");
+        // Retención: limpiar baneos no vistos hace más de 90 días (higiene, como
+        // hacen CrowdSec/AbuseIPDB). El histórico reciente se mantiene acumulado.
+        $purgados = DB::table('banned_ips')
+            ->where('banned_at', '<', $now->copy()->subDays(90))
+            ->delete();
+
+        $this->info("banned_ips: {$n} procesado(s)".($purgados ? ", {$purgados} purgado(s) (>90d)" : '').'.');
 
         return self::SUCCESS;
     }
