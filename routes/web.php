@@ -12,9 +12,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-// Home: Core Identity
+// Home: Core Identity (incluye el bloque de Seguridad Perimetral con datos en vivo + infra)
 Route::get('/', function (ThreatStats $threats) {
-    return view('sections.home', ['threats' => $threats->stats()]);
+    return view('sections.home', [
+        'threats' => $threats->stats(),
+        'infra' => $threats->infra(),
+    ]);
 })->name('home');
 
 // Sobre mí: perfil profesional, experiencia, educación y certificaciones
@@ -22,12 +25,9 @@ Route::get('/sobre-mi', function () {
     return view('sections.about');
 })->name('about');
 
-// Stack: Infrastructure & Ecosystem
-Route::get('/stack', function (UmamiStats $umami, ThreatStats $threats) {
-    return view('sections.stack', [
-        'countries' => $umami->countries(),
-        'threats' => $threats->stats(),
-    ]);
+// Stack: Infrastructure & Ecosystem (solo telemetría de países; seguridad vive en home)
+Route::get('/stack', function (UmamiStats $umami) {
+    return view('sections.stack', ['countries' => $umami->countries()]);
 })->name('stack');
 
 // Proyectos: Mission Critical Systems
