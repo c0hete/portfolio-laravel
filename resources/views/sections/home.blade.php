@@ -43,7 +43,7 @@
             {{--  dominio técnico --}}
             <div class="flex flex-col gap-1.5 border-l border-white/5 pl-12">
                 <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest">Current Focus</span>
-                <span class="text-base text-slate-300 font-medium">Critical Infrastructure</span>
+                <span class="text-base text-slate-300 font-medium">Secure Development & Ops</span>
             </div>
             
             <div class="flex flex-col gap-1.5 border-l border-white/5 pl-12">
