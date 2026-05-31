@@ -61,6 +61,10 @@ CURRENT_STATUS.md
 INTEGRATION_STATUS.md
 *_SUMMARY_*.md
 
+# Documentación interna del proyecto (PRIVATE - repo público, no exponer
+# infraestructura: IPs, paths del server, arquitectura, handoffs). Vive en local.
+documentacion/
+
 # Permitir solo el README del proyecto
 # (El README es público y va al repo)
 
