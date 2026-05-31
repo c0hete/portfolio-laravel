@@ -27,7 +27,7 @@
     Desarrollador <span class="text-slate-200 font-normal">PHP/Laravel</span> con
     <span class="text-slate-200 font-normal">3+ años</span> construyendo sistemas en producción,
     con enfoque <span class="text-slate-200 font-normal">DevSecOps</span>: integro seguridad en todo
-    el ciclo —del código al despliegue— con CI/CD endurecido, hardening y gestión de vulnerabilidades.
+    el ciclo (del código al despliegue) con CI/CD endurecido, hardening y gestión de vulnerabilidades.
 </p>
 
     {{-- Metadata & Call to Action --}}

@@ -53,6 +53,20 @@ Route::middleware('throttle:5,1')->group(function () {
     })->name('api.baneos');
 });
 
+// Descarga del CV — servido por Laravel (no URL estática) con rate-limit.
+// Anti-scraping: un crawler que intente bajarlo masivamente recibe 429. El PDF
+// vive fuera de public en storage/app/private, así no es accesible por URL directa.
+Route::get('/cv', function () {
+    $path = storage_path('app/private/cv.pdf');
+    abort_unless(is_file($path), 404);
+
+    return response()->file($path, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="CV-Jose-Alvarado-Mazzei.pdf"',
+        'X-Robots-Tag' => 'noindex, nofollow',
+    ]);
+})->middleware('throttle:10,1')->name('cv');
+
 // Stack: Infrastructure & Ecosystem (solo el stack técnico; telemetría vive en /seguridad)
 Route::get('/stack', function () {
     return view('sections.stack');

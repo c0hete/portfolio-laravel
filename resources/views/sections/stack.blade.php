@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Stack Tecnológico — José Alvarado Mazzei')
-@section('description', 'Stack técnico honesto por dominio: Laravel/PHP en producción, Docker, Linux hardening, OpenVAS, replicación MySQL geográfica con failover, AWS, CI/CD seguro. Lo que domino, lo que he tocado y lo que no — con métricas verificables.')
+@section('description', 'Stack técnico honesto por dominio: Laravel/PHP en producción, Docker, Linux hardening, OpenVAS, replicación MySQL geográfica con failover, AWS, CI/CD seguro. Lo que domino, lo que he tocado y lo que no, con métricas verificables.')
 
 @section('content')
 <section class="max-w-5xl mx-auto px-6 py-16">
@@ -12,15 +12,15 @@
             <span class="h-px flex-1 bg-gradient-to-r from-cyan-500/20 to-transparent"></span>
         </div>
         <p class="text-slate-500 font-mono text-xs uppercase tracking-[0.3em]">
-            Stack honesto · Lo que domino, lo que toqué, lo que no.
+            Capacidades por nivel de experiencia.
         </p>
     </header>
 
-    {{-- Leyenda de niveles — la honestidad como sistema visual. --}}
+    {{-- Leyenda de niveles: domino / he usado / he estudiado. --}}
     <div class="flex flex-wrap items-center gap-x-8 gap-y-2 mb-16 font-mono text-[10px] uppercase tracking-widest">
-        <span class="flex items-center gap-2 text-cyan-300"><span class="h-2 w-2 rounded-full bg-cyan-400"></span>Producción · diario</span>
-        <span class="flex items-center gap-2 text-slate-400"><span class="h-2 w-2 rounded-full bg-slate-500"></span>He trabajado / puntual</span>
-        <span class="flex items-center gap-2 text-slate-600"><span class="h-2 w-2 rounded-full bg-slate-700"></span>Conceptual · no en producción</span>
+        <span class="flex items-center gap-2 text-cyan-300"><span class="h-2 w-2 rounded-full bg-cyan-400"></span>Domino · producción</span>
+        <span class="flex items-center gap-2 text-slate-400"><span class="h-2 w-2 rounded-full bg-slate-500"></span>He usado · puntual</span>
+        <span class="flex items-center gap-2 text-slate-600"><span class="h-2 w-2 rounded-full bg-slate-700"></span>He estudiado · no en producción</span>
     </div>
 
     @php
@@ -118,12 +118,12 @@
                 ],
                 [
                     'Host endurecido hasta superar auditoría',
-                    'Llevé el host principal a 0 hallazgos en escaneo OpenVAS Full & Fast — remediando lo encontrado, con overrides justificados y documentados, no suprimidos. Hardening: HSTS/CSP, fail2ban, UFW, SSH ed25519.',
+                    'Llevé el host principal a 0 hallazgos en escaneo OpenVAS Full & Fast, remediando lo encontrado, con overrides justificados y documentados, no suprimidos. Hardening: HSTS/CSP, fail2ban, UFW, SSH ed25519.',
                     '0 hallazgos Crit/High/Med/Low',
                 ],
                 [
                     'CVEs remediados sin romper producción',
-                    'Resolví 3 CVEs de Symfony vía composer update manteniendo la suite de tests en verde — actualización real, no exclusión del aviso. SCA (composer/pnpm audit) + gitleaks corren como gate en cada build.',
+                    'Resolví 3 CVEs de Symfony vía composer update manteniendo la suite de tests en verde: actualización real, no exclusión del aviso. SCA (composer/pnpm audit) + gitleaks corren como gate en cada build.',
                     'SDLC con seguridad integrada',
                 ],
                 [
@@ -148,7 +148,7 @@
             <div class="space-y-2 max-w-2xl">
                 <p class="font-mono text-[10px] text-slate-500 leading-relaxed uppercase tracking-tighter">
                     <span class="text-cyan-500/60 font-bold">// RESPONSABLE_ÚNICO:</span>
-                    Ciclo completo de infraestructura en producción — diseño, despliegue, seguridad y operación. Mailcow (178 buzones), 2× Moodle, BigBlueButton (275 grabaciones migradas), DNS autoritativo propio.
+                    Ciclo completo de infraestructura en producción: diseño, despliegue, seguridad y operación. Mailcow (178 buzones), 2× Moodle, BigBlueButton (275 grabaciones migradas), DNS autoritativo propio.
                 </p>
                 <p class="font-mono text-[10px] text-slate-500 uppercase tracking-tighter">
                     <span class="text-cyan-500/60 font-bold">// WORKSTATION_OS:</span> Ubuntu Server, Kali Linux, PS_CLI.

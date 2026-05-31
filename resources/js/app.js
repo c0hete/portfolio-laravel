@@ -3,3 +3,5 @@ import './bootstrap';
 import './contact-terminal';
 // Botón "↻ actualizar" de los widgets de telemetría (/seguridad)
 import './telemetria';
+// Ensamblado de emails ofuscados (anti-cosecha)
+import './email-obfuscate';
