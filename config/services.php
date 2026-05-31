@@ -76,4 +76,21 @@ return [
         'api_password' => env('UMAMI_API_PASSWORD'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Telemetría de seguridad (widget /stack)
+    |--------------------------------------------------------------------------
+    | Sondeos maliciosos rechazados por el reverse-proxy (NPM) — bots que
+    | escanean .env, .git, exploits. Snapshot manual de los logs del hub
+    | (no automatizado: 3 containers sin filesystem compartido lo harían frágil).
+    | Para actualizar: contar en el hub y bumpear estos números + la fecha.
+    */
+
+    'security_stats' => [
+        'sondeos_total' => env('SEC_SONDEOS_TOTAL', 8091),
+        'intentos_secretos' => env('SEC_INTENTOS_SECRETOS', 927),
+        'desde' => env('SEC_DESDE', '24 may 2026'),
+        'snapshot' => env('SEC_SNAPSHOT', '31 may 2026'),
+    ],
+
 ];

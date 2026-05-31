@@ -67,6 +67,35 @@
         </div>
     </div>
 
+    {{-- Seguridad perimetral: sondeos maliciosos rechazados por el reverse-proxy.
+         Datos reales de los logs de NPM (snapshot). Cuenta la historia DevSecOps. --}}
+    @php $sec = config('services.security_stats'); @endphp
+    @if ($sec && ($sec['sondeos_total'] ?? 0) > 0)
+        <div class="mt-12 p-8 bg-red-500/[0.02] border border-red-500/15 rounded-lg">
+            <div class="flex items-center gap-3 mb-8">
+                <svg class="w-5 h-5 text-red-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                <h3 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Seguridad perimetral</h3>
+                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// sondeos rechazados por el reverse-proxy</span>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8">
+                <div>
+                    <p class="font-mono text-4xl md:text-5xl font-bold text-slate-100 tracking-tight">{{ number_format($sec['sondeos_total']) }}</p>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">sondeos maliciosos bloqueados</p>
+                </div>
+                <div>
+                    <p class="font-mono text-4xl md:text-5xl font-bold text-red-400/80 tracking-tight">{{ number_format($sec['intentos_secretos']) }}</p>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">intentos de robo de secretos (<span class="text-red-400/60">.env</span> · <span class="text-red-400/60">.git</span> · exploits)</p>
+                </div>
+            </div>
+
+            <p class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8 leading-relaxed">
+                // todos rechazados · ningún acceso comprometido · monitoreado desde {{ $sec['desde'] }} · snapshot {{ $sec['snapshot'] }}<br>
+                // defensa: NPM + block-common-exploits · secretos fuera del repo · hardening OS
+            </p>
+        </div>
+    @endif
+
     {{-- Telemetría en vivo: países desde donde visitan este nodo (Umami self-hosted).
          Solo se muestra si hay datos (en local/sin tráfico no aparece). --}}
     @if (! empty($countries))
