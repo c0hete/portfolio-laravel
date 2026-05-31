@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Models\Project;
+use App\Services\UmamiStats;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,8 +22,8 @@ Route::get('/sobre-mi', function () {
 })->name('about');
 
 // Stack: Infrastructure & Ecosystem
-Route::get('/stack', function () {
-    return view('sections.stack');
+Route::get('/stack', function (UmamiStats $umami) {
+    return view('sections.stack', ['countries' => $umami->countries()]);
 })->name('stack');
 
 // Proyectos: Mission Critical Systems

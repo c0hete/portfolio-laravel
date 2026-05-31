@@ -67,5 +67,38 @@
         </div>
     </div>
 
+    {{-- Telemetría en vivo: países desde donde visitan este nodo (Umami self-hosted).
+         Solo se muestra si hay datos (en local/sin tráfico no aparece). --}}
+    @if (! empty($countries))
+        @php $maxCount = max(array_column($countries, 'count')) ?: 1; @endphp
+        <div class="mt-12">
+            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mb-8">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                </span>
+                <h3 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Telemetría del nodo</h3>
+                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest">// visitas por país · últimos 90 días</span>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-x-12 gap-y-3 max-w-3xl">
+                @foreach (array_slice($countries, 0, 10) as $c)
+                    <div class="flex items-center gap-4">
+                        <span class="text-lg leading-none shrink-0">{{ $c['flag'] }}</span>
+                        <span class="font-mono text-xs text-slate-400 w-8 shrink-0">{{ $c['code'] }}</span>
+                        <div class="flex-1 h-1.5 bg-slate-800/60 rounded-full overflow-hidden">
+                            <div class="h-full bg-cyan-500/60 rounded-full" style="width: {{ max(4, round($c['count'] / $maxCount * 100)) }}%"></div>
+                        </div>
+                        <span class="font-mono text-[11px] text-cyan-400/70 w-8 text-right shrink-0">{{ $c['count'] }}</span>
+                    </div>
+                @endforeach
+            </div>
+
+            <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-6">
+                // datos propios · Umami self-hosted en infraestructura del nodo · sin cookies
+            </p>
+        </div>
+    @endif
+
 </section>
 @endsection

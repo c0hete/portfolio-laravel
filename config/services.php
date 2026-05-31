@@ -69,6 +69,11 @@ return [
     'umami' => [
         'src' => env('UMAMI_SRC', 'https://stats.alvaradomazzei.cl/script.js'),
         'website_id' => env('UMAMI_WEBSITE_ID'),
+
+        // API (server-side, para el widget de países). El token nunca llega al navegador.
+        'api_url' => env('UMAMI_API_URL', 'https://stats.alvaradomazzei.cl'),
+        'api_user' => env('UMAMI_API_USER'),
+        'api_password' => env('UMAMI_API_PASSWORD'),
     ],
 
 ];

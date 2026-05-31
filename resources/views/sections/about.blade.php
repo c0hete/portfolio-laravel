@@ -33,11 +33,12 @@
         {{-- Acciones rápidas --}}
         <div class="flex flex-wrap items-center gap-4 mt-10">
             <a href="{{ asset('cv/CV-Jose-Alvarado-Mazzei.pdf') }}" target="_blank" rel="noopener noreferrer"
+               data-umami-event="cv_download" data-umami-event-origen="sobre-mi"
                class="group flex items-center gap-3 font-mono text-[12px] tracking-widest text-cyan-400 uppercase px-6 py-3 border border-cyan-500/30 hover:border-cyan-500/60 hover:bg-cyan-500/10 transition-all rounded-sm">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                 Descargar CV
             </a>
-            <a href="{{ route('contact.index') }}"
+            <a href="{{ route('contact.index') }}" data-umami-event="contacto_click" data-umami-event-origen="sobre-mi"
                class="font-mono text-[12px] tracking-widest text-slate-400 uppercase px-6 py-3 border border-white/10 hover:border-white/30 hover:text-slate-200 transition-all rounded-sm">
                 Contactar
             </a>
