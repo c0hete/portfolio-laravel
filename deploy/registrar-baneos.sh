@@ -12,8 +12,8 @@
 #   - mmdblookup (paquete: libmaxminddb-dev / mmdb-bin) + base GeoIP en GEOIP_DB.
 #   - acceso root a /var/lib/fail2ban/fail2ban.sqlite3
 #
-# Instalar en cron (root, cada 15 min):
-#   */15 * * * * /home/master/sites/portafolio/deploy/registrar-baneos.sh >> /home/master/logs/registrar-baneos.log 2>&1
+# Instalar en cron (root, cada 15 min). Definir el salt en la línea de cron:
+#   */15 * * * * BANNED_HASH_SALT='<valor-secreto>' /home/master/sites/portafolio/deploy/registrar-baneos.sh >> /home/master/logs/registrar-baneos.log 2>&1
 #
 set -euo pipefail
 
@@ -22,8 +22,11 @@ GEOIP_DB="/usr/share/GeoIP/dbip-country-lite.mmdb"
 APP_SERVICE="app"
 COMPOSE_FILE="docker-compose.prod.yml"
 APP_DIR="/home/master/sites/portafolio"
-# Salt para el hash de dedupe (no reversible). Fijo, no secreto crítico.
-HASH_SALT="portafolio-banned-v1"
+# Salt para el hash de dedupe de IPs. Se lee de la env var BANNED_HASH_SALT
+# (definida en el entorno del cron / .env del server), NUNCA hardcodeada en el
+# repo público — así el hash no es atacable por diccionario con el salt conocido.
+# El fallback solo aplica en local/dev; en producción debe venir del entorno.
+HASH_SALT="${BANNED_HASH_SALT:-dev-only-local-salt}"
 
 [ -r "$F2B_DB" ] || { echo "[$(date -Is)] ERROR: no puedo leer $F2B_DB (¿root?)"; exit 1; }
 
