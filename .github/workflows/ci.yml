@@ -171,15 +171,11 @@ jobs:
             docker compose -f docker-compose.staging.yml exec -T app php artisan migrate --force
             echo "==> seed de proyectos demo (staging es desechable, seed idempotente)"
             docker compose -f docker-compose.staging.yml exec -T app php artisan db:seed --class=ProjectSeeder --force || true
-            # CLEAR antes de CACHE: descarta route/view/config viejos del volumen
-            # ANTES de regenerar. Sin esto, una ruta o vista nueva puede quedar
-            # invisible (404/500) si el cache se generó con estado stale.
-            echo "==> limpiar caches viejos"
-            docker compose -f docker-compose.staging.yml exec -T app php artisan optimize:clear
-            echo "==> regenerar caches (config + route + view)"
-            docker compose -f docker-compose.staging.yml exec -T app php artisan config:cache
-            docker compose -f docker-compose.staging.yml exec -T app php artisan route:cache
-            docker compose -f docker-compose.staging.yml exec -T app php artisan view:cache
+            # El cacheo (config+route) lo hace el ENTRYPOINT del container al arrancar
+            # (con clear previo). NO lo duplicamos acá — era la causa del gotcha de
+            # rutas nuevas en 404 por cachear a destiempo durante el 'up --build'.
+            echo "==> verificar que la app quedó arriba"
+            docker compose -f docker-compose.staging.yml exec -T app php artisan route:list >/dev/null
             echo "==> deploy staging OK"
 
   # ---------------------------------------------------------------------------
@@ -217,14 +213,10 @@ jobs:
             done
             echo "==> migrate (NUNCA migrate:fresh — hay proyectos reales)"
             docker compose -f docker-compose.prod.yml exec -T app php artisan migrate --force
-            # CLEAR antes de CACHE: descarta route/view/config viejos del volumen
-            # ANTES de regenerar. Evita el gotcha de rutas/vistas nuevas que quedan
-            # invisibles (404/500) por cache generado con estado stale en la ventana
-            # de reinicio del 'up --build'. optimize:clear limpia config+route+view+cache.
-            echo "==> limpiar caches viejos"
-            docker compose -f docker-compose.prod.yml exec -T app php artisan optimize:clear
-            echo "==> regenerar caches de producción (config + route + view)"
-            docker compose -f docker-compose.prod.yml exec -T app php artisan config:cache
-            docker compose -f docker-compose.prod.yml exec -T app php artisan route:cache
-            docker compose -f docker-compose.prod.yml exec -T app php artisan view:cache
+            # El cacheo (config+route) lo hace el ENTRYPOINT del container en cada
+            # arranque (con clear previo). NO lo duplicamos acá: hacerlo a destiempo
+            # durante el 'up --build' era la causa del gotcha de rutas nuevas en 404.
+            # Solo verificamos que la app responde tras el arranque.
+            echo "==> verificar que la app quedó arriba"
+            docker compose -f docker-compose.prod.yml exec -T app php artisan route:list >/dev/null
             echo "==> deploy OK"
