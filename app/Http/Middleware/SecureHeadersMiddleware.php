@@ -17,6 +17,17 @@ class SecureHeadersMiddleware
         $response->headers->set('Referrer-Policy', 'no-referrer');
         $response->headers->set('X-XSS-Protection', '0');
 
+        // SEC-03: restringir APIs del navegador (defensa en profundidad).
+        $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), interest-cohort=()');
+
+        // SEC-02: no divulgar la versión de PHP/stack en las cabeceras.
+        // PHP inyecta X-Powered-By a nivel SAPI (expose_php), fuera del control
+        // de Laravel → header_remove() nativo es lo que la quita de verdad.
+        $response->headers->remove('X-Powered-By');
+        if (function_exists('header_remove')) {
+            header_remove('X-Powered-By');
+        }
+
         // HSTS (Seguridad de Transporte Estricta)
         if ($request->isSecure() || $request->header('X-Forwarded-Proto') === 'https') {
             $response->headers->set(
