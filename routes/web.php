@@ -53,6 +53,18 @@ Route::middleware('throttle:5,1')->group(function () {
     })->name('api.baneos');
 });
 
+// security.txt (RFC 9116): canal estándar para reportar vulnerabilidades.
+// Coherente con el perfil DevSecOps. Sirve en ambas rutas que define el RFC.
+Route::get('/.well-known/security.txt', function () {
+    $expires = now()->addYear()->startOfDay()->toIso8601ZuluString();
+    $body = "Contact: mailto:jose@alvaradomazzei.cl\n"
+          ."Expires: {$expires}\n"
+          ."Preferred-Languages: es, en\n"
+          ."Canonical: https://alvaradomazzei.cl/.well-known/security.txt\n";
+
+    return response($body, 200)->header('Content-Type', 'text/plain; charset=utf-8');
+})->name('security-txt');
+
 // Descarga del CV — servido por Laravel (no URL estática) con rate-limit.
 // Anti-scraping: un crawler que intente bajarlo masivamente recibe 429. El PDF
 // vive fuera de public en storage/app/private, así no es accesible por URL directa.
