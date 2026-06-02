@@ -14,8 +14,17 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // 🛡️ CONFÍA EN EL PROXY (Nginx)
-        // Esto hace que Laravel reconozca el HTTPS, el Host y la IP real del usuario
-        $middleware->trustProxies(at: '*');
+        // Esto hace que Laravel reconozca el HTTPS, el Host y la IP real del usuario.
+        //
+        // SEGURIDAD: confiar en '*' significa creer el X-Forwarded-For/-Proto de
+        // CUALQUIER origen. Si el contenedor de la app fuese alcanzable sin pasar
+        // por NPM, un atacante podría falsear su IP real (envenenar la telemetría
+        // de baneos/visitantes). Lo correcto es confiar solo en la IP/red del
+        // proxy. Se hace configurable por env (TRUSTED_PROXIES, lista separada por
+        // comas, p.ej. la subred Docker de NPM) y cae a '*' si no se define, para
+        // no romper el despliegue existente.
+        $proxies = env('TRUSTED_PROXIES', '*');
+        $middleware->trustProxies(at: $proxies === '*' ? '*' : array_map('trim', explode(',', $proxies)));
 
         // ✅ Mantenemos la seguridad
         $middleware->append(SecureHeadersMiddleware::class);
