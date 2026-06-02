@@ -27,7 +27,6 @@ Route::get('/sobre-mi', function () {
 Route::get('/seguridad', function (ThreatStats $threats, UmamiStats $umami, BannedIps $banned) {
     return view('sections.security', [
         'threats' => $threats->stats(),
-        'infra' => $threats->infra(),
         'countries' => $umami->countries(),
         'banned' => $banned->stats(),
     ]);
