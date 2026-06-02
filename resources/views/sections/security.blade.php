@@ -57,7 +57,7 @@
                                 </span>
                             </div>
                             <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">ataques rechazados</p>
-                            <p data-ataques-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1">// actualiza cada {{ \App\Services\ThreatStats::REFRESH_SECONDS }}s</p>
+                            <p data-ataques-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1">// dato en vivo · ↻ para refrescar</p>
                         </div>
 
                         @if ($th['secretos'] > 0)
@@ -133,7 +133,7 @@
                     @endforeach
                 </div>
 
-                <p data-paises-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// actualiza cada {{ \App\Services\UmamiStats::REFRESH_MINUTES }} min</p>
+                <p data-paises-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// dato en vivo · ↻ para refrescar</p>
                 <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-1">
                     // datos propios · Umami self-hosted · sin cookies
                 </p>
@@ -204,7 +204,7 @@
                 @endforeach
             </div>
 
-            <p data-baneos-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// actualiza cada {{ \App\Services\BannedIps::REFRESH_MINUTES }} min</p>
+            <p data-baneos-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8">// dato en vivo · ↻ para refrescar</p>
             <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-1">
                 // fuerza bruta SSH detectada y bloqueada · IP enmascarada · geolocalización self-hosted
             </p>

@@ -87,6 +87,10 @@ async function refreshBaneos(btn) {
     }
 }
 
+// Refresco MANUAL: el dato llega fresco al cargar la página (server-side); este
+// botón permite traer el último valor sin recargar, para quien quiera verlo. No
+// hay polling automático: es un portafolio, no un dashboard que se mira todo el
+// día — el dato presente ya demuestra la telemetría sin gastar requests en vano.
 document.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-refresh]');
     if (!btn) return;
@@ -96,21 +100,3 @@ document.addEventListener('click', (e) => {
     if (kind === 'paises') refreshPaises(btn);
     if (kind === 'baneos') refreshBaneos(btn);
 });
-
-// ── Auto-refresh ──────────────────────────────────────────────────────────
-// La página dice "// actualiza cada Ns": acá se cumple. Cada widget se refresca
-// solo en su cadencia (la misma que el cache server-side de su Service, para no
-// martillar el endpoint). Se llama sin botón → refresca el dato sin el spinner.
-// Solo corre cuando hay un widget presente y la pestaña está visible (no gasta
-// requests en background). Respeta el throttle:5,1 de los endpoints.
-function startAutoRefresh(fn, seconds, selector) {
-    if (!document.querySelector(selector)) return; // el widget no está en la página
-    setInterval(() => {
-        if (document.visibilityState === 'visible') fn();
-    }, seconds * 1000);
-}
-
-// Cadencias alineadas con los Service: ataques 30s, países y baneos en minutos.
-startAutoRefresh(refreshAtaques, 30,  '[data-ataques-total]');
-startAutoRefresh(refreshPaises, 600,  '[data-paises-stamp]');   // 10 min
-startAutoRefresh(refreshBaneos, 300,  '[data-baneos-total]');   // 5 min
