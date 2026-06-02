@@ -25,6 +25,15 @@ class ContactController extends Controller
         // 🚨 CORRECCIÓN CRÍTICA: Forzamos la identidad que el SMTP acepta
         $systemFrom = 'web@alvaradomazzei.cl';
 
+        // 🛡️ ESCAPE HTML: el correo se arma interpolando datos del usuario en HTML.
+        // La validación (string|max) NO escapa marcado, así que un nombre/mensaje con
+        // <a>, <img> u otras etiquetas se renderizaría en el cliente de correo
+        // (inyección HTML → phishing). Escapamos cada campo antes de interpolar.
+        // En el mensaje, nl2br conserva los saltos de línea sobre el texto ya escapado.
+        $safeName = e($validated['name']);
+        $safeEmail = e($validated['email']);
+        $safeMessage = nl2br(e($validated['message']));
+
         try {
             // 📨 CAPA 2: TRANSMISIÓN AL ADMINISTRADOR
             Mail::send([], [], function ($message) use ($validated, $subject, $systemFrom) {
@@ -35,11 +44,11 @@ class ContactController extends Controller
                     ->html("
                             <div style='font-family: monospace; color: #333; padding: 20px; background: #f4f4f4;'>
                                 <h2 style='color: #0891b2;'>TRANSMISIÓN_ENTRANTE</h2>
-                                <p><strong>REMITENTE:</strong> {$validated['name']}</p>
-                                <p><strong>EMAIL:</strong> {$validated['email']}</p>
+                                <p><strong>REMITENTE:</strong> {$safeName}</p>
+                                <p><strong>EMAIL:</strong> {$safeEmail}</p>
                                 <hr style='border: 1px solid #ddd;'>
                                 <p><strong>MENSAJE:</strong></p>
-                                <div style='white-space: pre-wrap; background: #fff; padding: 15px; border: 1px solid #eee;'>{$validated['message']}</div>
+                                <div style='white-space: pre-wrap; background: #fff; padding: 15px; border: 1px solid #eee;'>{$safeMessage}</div>
                             </div>
                         ");
             });
@@ -52,7 +61,7 @@ class ContactController extends Controller
                     ->html("
                             <div style='font-family: monospace; background: #020617; color: #94a3b8; padding: 40px; border: 1px solid #1e293b;'>
                                 <h2 style='color: #22d3ee; margin-bottom: 20px;'>SISTEMA_NOTIFICACIÓN</h2>
-                                <p>Hola, <strong>{$validated['name']}</strong>.</p>
+                                <p>Hola, <strong>{$safeName}</strong>.</p>
                                 <p>Tu mensaje ha sido enrutado correctamente a través del nodo central de <strong>alvaradomazzei.cl</strong>.</p>
                                 <div style='border: 1px solid #0891b2; padding: 20px; margin: 30px 0; background: rgba(8, 145, 178, 0.05);'>
                                     <p style='font-size: 12px; color: #22d3ee; margin: 0;'>
