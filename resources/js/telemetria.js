@@ -27,6 +27,11 @@ async function refreshAtaques(btn) {
         const totalEl = document.querySelector('[data-ataques-total]');
         if (totalEl) totalEl.textContent = formatNumber(data.total);
 
+        // El contador de secretos sale de la MISMA respuesta (subset 'secret'),
+        // se actualiza junto al total para que ambos sigan cuadrando en vivo.
+        const secretosEl = document.querySelector('[data-ataques-secretos]');
+        if (secretosEl && typeof data.secretos !== 'undefined') secretosEl.textContent = formatNumber(data.secretos);
+
         // Marca de tiempo "actualizado recién".
         const stampEl = document.querySelector('[data-ataques-stamp]');
         if (stampEl) stampEl.textContent = '// actualizado recién';

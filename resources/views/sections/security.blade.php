@@ -22,15 +22,17 @@
          izquierda = defensa perimetral; derecha = procedencia del tráfico. --}}
     <div class="grid lg:grid-cols-2 gap-8 items-start">
 
-        {{-- ════ Columna izquierda: SONDEOS RECHAZADOS ════
-             (1) EN VIVO (BlockedProbeLogger) · (2) histórico infra (cron→infra_stats)
-             (3) robo de secretos (subset del histórico). --}}
-        @if (($sec && ($sec['sondeos_total'] ?? 0) > 0) || ($th && $th['total'] > 0))
+        {{-- ════ Columna izquierda: SONDEOS RECHAZADOS (EN VIVO · este dominio) ════
+             TODO de una sola fuente ($th = ThreatStats::stats, BlockedProbeLogger):
+             total + secretos (subset 'secret') + rutas top — misma ventana, mismos
+             números (los secretos cuadran con las rutas .env/.git de abajo).
+             El snapshot de infra ($sec) vive en su PROPIA tarjeta más abajo. --}}
+        @if ($th && $th['total'] > 0)
             <div class="relative overflow-hidden p-8 bg-red-500/[0.015] border border-red-500/15 rounded-lg h-full">
                 <div class="absolute -top-24 -right-24 w-72 h-72 bg-red-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="relative">
-                    <div class="flex items-center gap-3 mb-8">
+                    <div class="flex items-center gap-3 mb-2">
                         <svg class="w-5 h-5 text-red-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
                         <h2 class="text-slate-100 font-semibold text-sm uppercase tracking-widest">Sondeos rechazados</h2>
                         {{-- Botón actualizar (el contador en vivo lee la DB propia) --}}
@@ -40,36 +42,34 @@
                             ↻
                         </button>
                     </div>
+                    {{-- Ventana temporal EXPLÍCITA: todo lo de esta tarjeta comparte esta fuente y ventana --}}
+                    <p class="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-8">
+                        // este dominio · en vivo{{ ($th['desde']) ? ' desde '.$th['desde'] : '' }}
+                    </p>
 
-                    {{-- Métricas: 1 col en móvil, 3 en sm; dentro de la columna queda compacto --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        @if ($th && $th['total'] > 0)
-                            <div>
-                                <div class="flex items-baseline gap-2">
-                                    <p data-ataques-total class="font-mono text-3xl md:text-4xl font-bold text-red-400/90 tracking-tight">{{ number_format($th['total']) }}</p>
-                                    <span class="relative flex h-2 w-2 mb-1">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                                    </span>
-                                </div>
-                                <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">ataques rechazados <span class="text-red-400/60">· en vivo</span></p>
-                                <p data-ataques-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1">// actualiza cada {{ \App\Services\ThreatStats::REFRESH_SECONDS }}s</p>
+                    {{-- Métricas: total y robo de secretos — AMBAS del mismo live, coherentes entre sí --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <div class="flex items-baseline gap-2">
+                                <p data-ataques-total class="font-mono text-3xl md:text-4xl font-bold text-red-400/90 tracking-tight">{{ number_format($th['total']) }}</p>
+                                <span class="relative flex h-2 w-2 mb-1">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                </span>
                             </div>
-                        @endif
+                            <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">ataques rechazados</p>
+                            <p data-ataques-stamp class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-1">// actualiza cada {{ \App\Services\ThreatStats::REFRESH_SECONDS }}s</p>
+                        </div>
 
-                        @if ($sec && ($sec['sondeos_total'] ?? 0) > 0)
+                        @if ($th['secretos'] > 0)
                             <div>
-                                <p class="font-mono text-3xl md:text-4xl font-bold text-slate-100 tracking-tight">{{ number_format($sec['sondeos_total']) }}</p>
-                                <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">a la infraestructura <span class="text-slate-600">· snapshot {{ $sec['snapshot'] }}</span></p>
-                            </div>
-                            <div>
-                                <p class="font-mono text-3xl md:text-4xl font-bold text-red-400/80 tracking-tight">{{ number_format($sec['intentos_secretos']) }}</p>
-                                <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">intentos de robo bloqueados (<span class="text-red-400/60">.env</span> · <span class="text-red-400/60">.git</span>)</p>
+                                <p data-ataques-secretos class="font-mono text-3xl md:text-4xl font-bold text-red-400/80 tracking-tight">{{ number_format($th['secretos']) }}</p>
+                                <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">intentos de robo de secretos (<span class="text-red-400/60">.env</span> · <span class="text-red-400/60">.git</span> · …)</p>
                             </div>
                         @endif
                     </div>
 
-                    @if ($th && ! empty($th['top']))
+                    @if (! empty($th['top']))
                         <div class="mt-8 pt-6 border-t border-red-500/10">
                             <p class="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">// rutas más sondeadas en este nodo</p>
                             <div class="flex flex-wrap gap-x-6 gap-y-2">
@@ -83,10 +83,9 @@
                         </div>
                     @endif
 
-                    @php $desdeTxt = ($th && $th['desde']) ? ' · en vivo desde '.$th['desde'] : ''; @endphp
                     <p class="font-mono text-[9px] text-slate-600 uppercase tracking-widest mt-8 leading-relaxed">
-                        // todos rechazados · ningún acceso comprometido{{ $desdeTxt }}<br>
-                        // defensa: NPM + block-common-exploits · middleware Laravel · secretos fuera del repo · hardening OS
+                        // todos rechazados · ningún acceso comprometido<br>
+                        // defensa: reverse proxy + block-common-exploits · middleware Laravel · secretos fuera del repo · hardening OS
                     </p>
                 </div>
             </div>
@@ -143,6 +142,37 @@
         @endif
 
     </div>
+
+    {{-- ════ Snapshot de la INFRAESTRUCTURA del hub (otra fuente / otra ventana) ════
+         $sec = ThreatStats::infra (cron → infra_stats). Mide los sondeos a TODA la IP
+         del hub (vía logs de NPM), no solo a este dominio. Tarjeta aparte y rotulada
+         como 'snapshot' para NO mezclarse con la telemetría en vivo de arriba. --}}
+    @if ($sec && ($sec['sondeos_total'] ?? 0) > 0)
+        <div class="mt-8 p-8 border border-white/5 rounded-lg">
+            <div class="flex items-center gap-3 border-b border-white/5 pb-4 mb-8">
+                <svg class="w-5 h-5 text-slate-400/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 14.25h13.5m-13.5 0a3 3 0 01-3-3m3 3a3 3 0 100 6h13.5a3 3 0 100-6m-16.5-3a3 3 0 013-3h13.5a3 3 0 013 3m-19.5 0a4.5 4.5 0 01.9-2.7L5.737 5.1a3.375 3.375 0 012.7-1.35h7.126c1.062 0 2.062.5 2.7 1.35l2.587 3.45a4.5 4.5 0 01.9 2.7m0 0a3 3 0 01-3 3m0 3h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008zm-3 6h.008v.008h-.008v-.008zm0-6h.008v.008h-.008v-.008z"/></svg>
+                <h2 class="text-slate-200 font-semibold text-sm uppercase tracking-widest">Infraestructura</h2>
+                <span class="font-mono text-[10px] text-slate-600 uppercase tracking-widest hidden sm:inline">// snapshot {{ $sec['snapshot'] }}</span>
+            </div>
+
+            <div class="flex flex-wrap gap-x-12 gap-y-4">
+                <div>
+                    <p class="font-mono text-3xl md:text-4xl font-bold text-slate-100 tracking-tight">{{ number_format($sec['sondeos_total']) }}</p>
+                    <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">sondeos a la infraestructura</p>
+                </div>
+                @if (($sec['intentos_secretos'] ?? 0) > 0)
+                    <div>
+                        <p class="font-mono text-3xl md:text-4xl font-bold text-slate-300 tracking-tight">{{ number_format($sec['intentos_secretos']) }}</p>
+                        <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest mt-2">intentos de robo de secretos</p>
+                    </div>
+                @endif
+            </div>
+
+            <p class="font-mono text-[9px] text-slate-700 uppercase tracking-widest mt-8 leading-relaxed">
+                // medición agregada a nivel servidor · distinta de la telemetría en vivo de este dominio
+            </p>
+        </div>
+    @endif
 
     {{-- ════ IPs baneadas por fail2ban (historial geolocalizado) ════
          Alimentado por el cron registrar-baneos.sh → tabla banned_ips.
