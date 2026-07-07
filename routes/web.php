@@ -98,7 +98,11 @@ Route::get('/contacto', function () {
 })->name('contact.index');
 
 // Acción de Envío (POST)
-Route::post('/contacto', [ContactController::class, 'submit'])->name('contact.submit');
+// throttle:3,10 = máx 3 envíos por IP cada 10 min → 429 si se supera. Corta el
+// abuso automatizado del formulario (bots que lo martillaban generando correo basura).
+Route::post('/contacto', [ContactController::class, 'submit'])
+    ->middleware('throttle:3,10')
+    ->name('contact.submit');
 
 // robots.txt dinámico: en prod permite indexar; en staging/local bloquea TODO
 // (que Google no indexe el entorno de pruebas). Sirve como ruta porque el archivo

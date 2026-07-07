@@ -42,7 +42,15 @@
     {{-- Formulario con sutil presencia en los bordes --}}
     <form id="contact-form" action="{{ route('contact.submit') }}" method="POST" novalidate class="space-y-12 bg-[#030712]/60 border border-cyan-500/10 shadow-[0_0_15px_rgba(6,182,212,0.02)] p-12 rounded-sm relative overflow-hidden">
         @csrf
-        
+
+        {{-- Honeypot anti-bot: fuera de pantalla, invisible para humanos. Los bots que
+             rellenan todos los campos lo llenan; el ContactController descarta esos
+             envíos silenciosamente. No usar display:none (algunos bots lo detectan). --}}
+        <div style="position:absolute; left:-9999px; top:-9999px;" aria-hidden="true">
+            <label for="website">No llenar este campo</label>
+            <input type="text" name="website" id="website" tabindex="-1" autocomplete="off">
+        </div>
+
         <div class="grid md:grid-cols-2 gap-16">
             <div class="flex flex-col gap-3">
                 <label class="font-mono text-[10px] text-slate-500 uppercase tracking-[0.2em] font-semibold">Identify::User_Name</label>
