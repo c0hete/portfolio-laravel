@@ -107,10 +107,17 @@ class BlockedProbeLogger
         }
 
         // Primer patrón que matchee gana (orden: secretos antes que .php genérico).
+        // '.php' se ancla al FINAL del path (no substring): así un path legítimo
+        // que contenga ".php" en medio —p. ej. un segmento o parámetro de ruta—
+        // no se cuenta como sondeo. El resto siguen siendo match por substring.
         $matched = null;
         $category = null;
         foreach (self::PATTERNS as $pattern => $cat) {
-            if (str_contains($lower, $pattern)) {
+            $hit = $pattern === '.php'
+                ? str_ends_with($lower, '.php')
+                : str_contains($lower, $pattern);
+
+            if ($hit) {
                 $matched = $pattern;
                 $category = $cat;
                 break;
